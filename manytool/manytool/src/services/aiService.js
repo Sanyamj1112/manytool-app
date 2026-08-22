@@ -1,5 +1,5 @@
 export const fetchGroqAI = async (text, task) => {
-  const GROQ_API_KEY = import.meta.env.VITEgsk_ZXM8bC8MPUnuNxZjbQOhWGdyb3FYKrmwcU5A3JIMIw0oY5RsddzW;
+  const GROQ_API_KEY = import.meta.env.VITE_GROQ_API_KEY;;
   const prompts = {
     grammar: "Correct the grammar of the following text and return only the corrected version.",
     summarize: "Summarize the following text in 2 short sentences.",
