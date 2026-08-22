@@ -4,9 +4,9 @@ import { HelmetProvider } from 'react-helmet-async';
 import { motion, AnimatePresence } from 'framer-motion';
 
 // Layout Components
-import Header from './components/Layout/Header';
-import Sidebar from './components/Layout/Sidebar';
-import Footer from './components/Layout/Footer';
+import Header from './components/layout/Header';
+import Sidebar from './components/layout/Sidebar';
+import Footer from './components/layout/Footer';
 
 // Tool Components
 import WordCounter from './components/Tools/TextUtilities/WordCounter';
