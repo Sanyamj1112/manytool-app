@@ -1,0 +1,19 @@
+{
+  "name": "ManyTool - Web Utilities Platform",
+  "short_name": "ManyTool",
+  "description": "A collection of powerful web utilities for productivity and text processing",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#6366f1",
+  "scope": "/",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    }
+  ],
+  "categories": ["productivity", "utilities"]
+}

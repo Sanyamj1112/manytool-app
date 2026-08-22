@@ -1,0 +1,8 @@
+Format: Binary Image File
+Size: 64x64 pixels (multi-resolution: 16x16, 32x32, 64x64)
+Type: .ico (Windows Icon Format)
+Purpose: Browser tab icon
+
+Note: Download any favicon from https://www.favicon-generator.org/ 
+      OR use an online converter (PNG to ICO)
+      Place it in public/ folder
