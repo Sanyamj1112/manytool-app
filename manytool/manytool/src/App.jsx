@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -22,27 +22,45 @@ import NotFound from './components/NotFound';
 
 // Analytics & Admin
 import { logAnalytics } from './services/supabaseClient';
-import AdminDashboard from './components/AdminDashboard'; // Hum isko abhi agle step mein banate hain
+import AdminDashboard from './components/AdminDashboard';
 
 import { ThemeProvider } from './context/ThemeContext';
 import { HistoryProvider } from './context/HistoryContext';
 
+// Route Tracker Component jo har page change par track karega
+function RouteTracker() {
+  const location = useLocation();
+
+  useEffect(() => {
+    let toolName = 'Home Page';
+    if (location.pathname.includes('word-counter')) toolName = 'Word Counter';
+    else if (location.pathname.includes('case-converter')) toolName = 'Case Converter';
+    else if (location.pathname.includes('lorem-ipsum')) toolName = 'Lorem Ipsum';
+    else if (location.pathname.includes('slug-generator')) toolName = 'Slug Generator';
+    else if (location.pathname.includes('age-calculator')) toolName = 'Age Calculator';
+    else if (location.pathname.includes('password-generator')) toolName = 'Password Generator';
+    else if (location.pathname.includes('unit-converter')) toolName = 'Unit Converter';
+    else if (location.pathname.includes('about')) toolName = 'About Page';
+    else if (location.pathname.includes('privacy')) toolName = 'Privacy Policy';
+    else if (location.pathname.includes('admin-dashboard')) toolName = 'Admin Dashboard';
+
+    logAnalytics(toolName);
+  }, [location]);
+
+  return null;
+}
+
 function App() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  // App khulte hi ek baar Home visit log ho jayega
-  useEffect(() => {
-    logAnalytics('Home Page Visit');
-  }, []);
-
   const toolRoutes = [
-    { path: '/tools/word-counter', component: WordCounter, name: 'Word Counter' },
-    { path: '/tools/case-converter', component: CaseConverter, name: 'Case Converter' },
-    { path: '/tools/lorem-ipsum', component: LoremIpsum, name: 'Lorem Ipsum' },
-    { path: '/tools/slug-generator', component: SlugGenerator, name: 'Slug Generator' },
-    { path: '/tools/age-calculator', component: AgeCalculator, name: 'Age Calculator' },
-    { path: '/tools/password-generator', component: PasswordGenerator, name: 'Password Generator' },
-    { path: '/tools/unit-converter', component: UnitConverter, name: 'Unit Converter' },
+    { path: '/tools/word-counter', component: WordCounter },
+    { path: '/tools/case-converter', component: CaseConverter },
+    { path: '/tools/lorem-ipsum', component: LoremIpsum },
+    { path: '/tools/slug-generator', component: SlugGenerator },
+    { path: '/tools/age-calculator', component: AgeCalculator },
+    { path: '/tools/password-generator', component: PasswordGenerator },
+    { path: '/tools/unit-converter', component: UnitConverter },
   ];
 
   const pageVariants = {
@@ -56,6 +74,7 @@ function App() {
       <ThemeProvider>
         <HistoryProvider>
           <Router>
+            <RouteTracker />
             <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors duration-300">
               <Header
                 onMenuToggle={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -74,14 +93,7 @@ function App() {
                               key={route.path}
                               path={route.path}
                               element={
-                                <motion.div 
-                                  variants={pageVariants} 
-                                  initial="initial" 
-                                  animate="animate" 
-                                  exit="exit" 
-                                  transition={{ duration: 0.3 }}
-                                  onViewportEnter={() => logAnalytics(route.name)}
-                                >
+                                <motion.div variants={pageVariants} initial="initial" animate="animate" exit="exit" transition={{ duration: 0.3 }}>
                                   <Component />
                                 </motion.div>
                               }
@@ -91,7 +103,7 @@ function App() {
                         <Route path="/about" element={<motion.div variants={pageVariants} initial="initial" animate="animate" exit="exit"><AboutPage /></motion.div>} />
                         <Route path="/privacy" element={<motion.div variants={pageVariants} initial="initial" animate="animate" exit="exit"><PrivacyPage /></motion.div>} />
                         
-                        {/* Hidden Admin Dashboard Route */}
+                        {/* Admin Dashboard Route */}
                         <Route path="/admin-dashboard" element={<motion.div variants={pageVariants} initial="initial" animate="animate" exit="exit"><AdminDashboard /></motion.div>} />
 
                         <Route path="/" element={
