@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -20,20 +20,29 @@ import AboutPage from './components/AboutPage';
 import PrivacyPage from './components/PrivacyPage';
 import NotFound from './components/NotFound';
 
+// Analytics & Admin
+import { logAnalytics } from './services/supabaseClient';
+import AdminDashboard from './components/AdminDashboard'; // Hum isko abhi agle step mein banate hain
+
 import { ThemeProvider } from './context/ThemeContext';
 import { HistoryProvider } from './context/HistoryContext';
 
 function App() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+  // App khulte hi ek baar Home visit log ho jayega
+  useEffect(() => {
+    logAnalytics('Home Page Visit');
+  }, []);
+
   const toolRoutes = [
-    { path: '/tools/word-counter', component: WordCounter },
-    { path: '/tools/case-converter', component: CaseConverter },
-    { path: '/tools/lorem-ipsum', component: LoremIpsum },
-    { path: '/tools/slug-generator', component: SlugGenerator },
-    { path: '/tools/age-calculator', component: AgeCalculator },
-    { path: '/tools/password-generator', component: PasswordGenerator },
-    { path: '/tools/unit-converter', component: UnitConverter },
+    { path: '/tools/word-counter', component: WordCounter, name: 'Word Counter' },
+    { path: '/tools/case-converter', component: CaseConverter, name: 'Case Converter' },
+    { path: '/tools/lorem-ipsum', component: LoremIpsum, name: 'Lorem Ipsum' },
+    { path: '/tools/slug-generator', component: SlugGenerator, name: 'Slug Generator' },
+    { path: '/tools/age-calculator', component: AgeCalculator, name: 'Age Calculator' },
+    { path: '/tools/password-generator', component: PasswordGenerator, name: 'Password Generator' },
+    { path: '/tools/unit-converter', component: UnitConverter, name: 'Unit Converter' },
   ];
 
   const pageVariants = {
@@ -65,7 +74,14 @@ function App() {
                               key={route.path}
                               path={route.path}
                               element={
-                                <motion.div variants={pageVariants} initial="initial" animate="animate" exit="exit" transition={{ duration: 0.3 }}>
+                                <motion.div 
+                                  variants={pageVariants} 
+                                  initial="initial" 
+                                  animate="animate" 
+                                  exit="exit" 
+                                  transition={{ duration: 0.3 }}
+                                  onViewportEnter={() => logAnalytics(route.name)}
+                                >
                                   <Component />
                                 </motion.div>
                               }
@@ -75,6 +91,9 @@ function App() {
                         <Route path="/about" element={<motion.div variants={pageVariants} initial="initial" animate="animate" exit="exit"><AboutPage /></motion.div>} />
                         <Route path="/privacy" element={<motion.div variants={pageVariants} initial="initial" animate="animate" exit="exit"><PrivacyPage /></motion.div>} />
                         
+                        {/* Hidden Admin Dashboard Route */}
+                        <Route path="/admin-dashboard" element={<motion.div variants={pageVariants} initial="initial" animate="animate" exit="exit"><AdminDashboard /></motion.div>} />
+
                         <Route path="/" element={
                           <motion.div variants={pageVariants} initial="initial" animate="animate" exit="exit" className="text-center py-20">
                             <h1 className="text-5xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-4">Welcome to ManyTool</h1>
