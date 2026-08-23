@@ -1,7 +1,8 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://szbqxdqvwyqolplljatj.supabase.co';
-const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'sb_publishable_XeZCZrPGIRlKAjUEbGKqNQ_QPxj3NHb';
+// Direct hardcoded values taaki Vercel build mein kabhi error na aaye
+const supabaseUrl = 'https://szbqxdqvwyqolplljatj.supabase.co';
+const supabaseKey = 'sb_publishable_XeZCZrPGIRlKAjUEbGKqNQ_QPxj3NHb';
 
 export const supabase = createClient(supabaseUrl, supabaseKey);
 
