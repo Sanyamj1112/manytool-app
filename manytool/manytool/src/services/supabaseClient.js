@@ -2,7 +2,7 @@ import { createClient } from '@supabase/supabase-js';
 
 // Direct hardcoded values taaki Vercel build mein kabhi error na aaye
 const supabaseUrl = 'https://szbqxdqvwyqolplljatj.supabase.co';
-const supabaseKey = 'sb_publishable_XeZCZrPGIRlKAjUEbGKqNQ_QPxj3NHb';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6YnF4ZHF2d3lxb2xwbGxqYXRqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc0ODU5ODQsImV4cCI6MjEwMzA2MTk4NH0.THPtcRINH2pYTcA5N_PCgP-5ETXYvjrNpECo3da_8hI';
 
 export const supabase = createClient(supabaseUrl, supabaseKey);
 
