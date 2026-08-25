@@ -27,12 +27,11 @@ import AdminDashboard from './components/AdminDashboard';
 import { ThemeProvider } from './context/ThemeContext';
 import { HistoryProvider } from './context/HistoryContext';
 
-// Route Tracker Component - Admin path par tracking skip karega (Problem 2 Solved)
+// Route Tracker Component - Admin path par tracking skip karega
 function RouteTracker() {
   const location = useLocation();
 
   useEffect(() => {
-    // Agar admin dashboard hai toh analytics log mat karo
     if (location.pathname.includes('admin-dashboard')) return;
 
     let toolName = 'Home Page';
@@ -54,6 +53,31 @@ function RouteTracker() {
 
 function App() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Security Layer: Block Right-Click and DevTools shortcuts (F12, Ctrl+Shift+I, Ctrl+U)
+  useEffect(() => {
+    const handleContextMenu = (e) => {
+      e.preventDefault();
+    };
+
+    const handleKeyDown = (e) => {
+      if (
+        e.key === 'F12' ||
+        (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C' || e.key === 'J')) ||
+        (e.ctrlKey && e.key === 'U')
+      ) {
+        e.preventDefault();
+      }
+    };
+
+    window.addEventListener('contextmenu', handleContextMenu);
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('contextmenu', handleContextMenu);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
 
   const toolRoutes = [
     { path: '/tools/word-counter', component: WordCounter },
@@ -83,7 +107,6 @@ function App() {
                 isMobileMenuOpen={isMobileMenuOpen}
               />
               <div className="flex">
-                {/* Mobile Menu Close handler pass kiya hai (Problem 1 & 3 Solved) */}
                 <Sidebar 
                   isOpen={isMobileMenuOpen} 
                   onClose={() => setIsMobileMenuOpen(false)} 

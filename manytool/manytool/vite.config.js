@@ -19,5 +19,7 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
-  // Build aur OptimizeDeps ko filhal comment out kar do, debugging mein madad milegi
+  build: {
+    sourcemap: false, // Security ke liye source maps disable kar diye hain taaki code inspect na ho sake
+  },
 });
