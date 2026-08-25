@@ -27,11 +27,14 @@ import AdminDashboard from './components/AdminDashboard';
 import { ThemeProvider } from './context/ThemeContext';
 import { HistoryProvider } from './context/HistoryContext';
 
-// Route Tracker Component jo har page change par track karega
+// Route Tracker Component - Admin path par tracking skip karega (Problem 2 Solved)
 function RouteTracker() {
   const location = useLocation();
 
   useEffect(() => {
+    // Agar admin dashboard hai toh analytics log mat karo
+    if (location.pathname.includes('admin-dashboard')) return;
+
     let toolName = 'Home Page';
     if (location.pathname.includes('word-counter')) toolName = 'Word Counter';
     else if (location.pathname.includes('case-converter')) toolName = 'Case Converter';
@@ -42,7 +45,6 @@ function RouteTracker() {
     else if (location.pathname.includes('unit-converter')) toolName = 'Unit Converter';
     else if (location.pathname.includes('about')) toolName = 'About Page';
     else if (location.pathname.includes('privacy')) toolName = 'Privacy Policy';
-    else if (location.pathname.includes('admin-dashboard')) toolName = 'Admin Dashboard';
 
     logAnalytics(toolName);
   }, [location]);
@@ -81,7 +83,11 @@ function App() {
                 isMobileMenuOpen={isMobileMenuOpen}
               />
               <div className="flex">
-                <Sidebar isOpen={isMobileMenuOpen} />
+                {/* Mobile Menu Close handler pass kiya hai (Problem 1 & 3 Solved) */}
+                <Sidebar 
+                  isOpen={isMobileMenuOpen} 
+                  onClose={() => setIsMobileMenuOpen(false)} 
+                />
                 <main className="flex-1 min-h-[calc(100vh-80px)]">
                   <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                     <AnimatePresence mode="wait">
