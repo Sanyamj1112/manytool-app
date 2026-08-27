@@ -101,7 +101,8 @@ function App() {
         <HistoryProvider>
           <Router>
             <RouteTracker />
-            <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors duration-300">
+            {/* Permanent Dark Mode Background Locked */}
+            <div className="min-h-screen bg-[#090d16] text-gray-100 transition-colors duration-300">
               <Header
                 onMenuToggle={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                 isMobileMenuOpen={isMobileMenuOpen}
@@ -137,9 +138,9 @@ function App() {
 
                         <Route path="/" element={
                           <motion.div variants={pageVariants} initial="initial" animate="animate" exit="exit" className="text-center py-20">
-                            <h1 className="text-5xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-4">Welcome to ManyTool</h1>
-                            <p className="text-gray-600 dark:text-gray-400 text-lg mb-8">Select a tool from the sidebar to get started</p>
-                            <Link to="/tools/word-counter" className="px-8 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-semibold hover:shadow-lg transition-all duration-300">Get Started</Link>
+                            <h1 className="text-5xl font-bold bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent mb-4">Welcome to ManyTool</h1>
+                            <p className="text-gray-400 text-lg mb-8">Select a tool from the sidebar to get started</p>
+                            <Link to="/tools/word-counter" className="px-8 py-3 bg-gradient-to-r from-cyan-500 to-purple-600 text-white rounded-lg font-semibold hover:shadow-lg transition-all duration-300">Get Started</Link>
                           </motion.div>
                         } />
                         <Route path="*" element={<NotFound />} />

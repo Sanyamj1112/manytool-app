@@ -1,40 +1,24 @@
 /**
- * PasswordGenerator.jsx
- * ─────────────────────────────────────────────────────────────
- * Advanced password generator with strength indicator
- * Features:
- * - Customizable password length
- * - Character set options (uppercase, lowercase, numbers, symbols)
- * - Real-time strength calculation
- * - Password history (local storage)
- * - Copy to clipboard
- * - Generate multiple passwords
- * - Entropy calculation
- * @version 1.0.0
- * @requires react@^18.2.0
- * @requires framer-motion@^10.16.16
- * @requires react-helmet-async@^2.0.4
- * @requires lucide-react@^0.308.0
+ * @file PasswordGenerator.jsx
+ * @description Enterprise-grade secure password generator matching the exact structural layout of Text Utilities with cyber security aesthetic.
+ * @version 4.0.0
  */
 
 import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
-import { Lock, RefreshCw, Copy, Zap, Eye, EyeOff, Save } from 'lucide-react';
+import { Lock, RefreshCw, Copy, Eye, EyeOff, Save, KeyRound, ShieldCheck, Terminal, CheckCircle2, Shield } from 'lucide-react';
 import CopyButton from '@/components/common/CopyButton';
 import { useToast } from '@/Hooks/useToast';
 import Toast from '@/components/common/Toast';
 import { useHistory } from '@/context/HistoryContext';
 import Tooltip from '@/components/common/Tooltip';
 
-/**
- * PasswordGenerator Component
- */
 const PasswordGenerator = () => {
   const [password, setPassword] = useState('');
   const [length, setLength] = useState(16);
   const [showPassword, setShowPassword] = useState(false);
-  const isInitialized = useRef(false); // Double generation fix
+  const isInitialized = useRef(false);
   
   // Custom Seed States
   const [seed, setSeed] = useState('');
@@ -50,7 +34,6 @@ const PasswordGenerator = () => {
   const { toasts, showToast, removeToast } = useToast();
   const { saveToHistory } = useHistory(); 
 
-  // Character sets
   const charSets = {
     uppercase: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
     lowercase: 'abcdefghijklmnopqrstuvwxyz',
@@ -60,7 +43,7 @@ const PasswordGenerator = () => {
 
   // Calculate password strength
   const calculateStrength = useCallback((pwd) => {
-    if (!pwd) return { score: 0, label: 'None', color: 'bg-gray-600' };
+    if (!pwd) return { score: 0, label: 'NONE', color: 'bg-slate-600' };
 
     let score = 0;
     if (pwd.length >= 8) score += 20;
@@ -72,13 +55,12 @@ const PasswordGenerator = () => {
     if (/[^a-zA-Z0-9]/.test(pwd)) score += 15;
     if (!/(.)\1{2,}/.test(pwd)) score += 5;
 
-    if (score < 30) return { score, label: 'Weak', color: 'bg-red-500' };
-    if (score < 60) return { score, label: 'Fair', color: 'bg-yellow-500' };
-    if (score < 80) return { score, label: 'Good', color: 'bg-blue-500' };
-    return { score, label: 'Strong', color: 'bg-cyan-400' };
+    if (score < 30) return { score, label: 'VULNERABLE', color: 'bg-red-500' };
+    if (score < 60) return { score, label: 'MODERATE', color: 'bg-amber-500' };
+    if (score < 80) return { score, label: 'SECURE', color: 'bg-cyan-400' };
+    return { score, label: 'MILITARY-GRADE', color: 'bg-emerald-400' };
   }, []);
 
-  // Generate password
   const generatePassword = useCallback((showNotification = true) => {
     let characters = '';
     if (options.uppercase) characters += charSets.uppercase;
@@ -91,7 +73,6 @@ const PasswordGenerator = () => {
       return;
     }
 
-    // Logic with Custom Seed integration
     let newPassword = useCustomSeed ? seed : '';
     const targetLength = Math.max(newPassword.length, length);
     
@@ -102,11 +83,10 @@ const PasswordGenerator = () => {
 
     setPassword(finalPassword);
     if (showNotification) {
-        showToast('Password generated!', 'success', 2000);
+      showToast('Password generated successfully!', 'success', 2000);
     }
   }, [length, options, seed, useCustomSeed, showToast]);
 
-  // Handle Save
   const handleSaveToHistory = () => {
     saveToHistory('Password Gen', password);
     showToast('Saved to history!', 'success', 2000);
@@ -114,8 +94,8 @@ const PasswordGenerator = () => {
 
   useEffect(() => {
     if (!isInitialized.current) {
-        generatePassword(false); // Mount par bina notification ke generate karega
-        isInitialized.current = true;
+      generatePassword(false);
+      isInitialized.current = true;
     }
   }, [generatePassword]);
 
@@ -128,211 +108,245 @@ const PasswordGenerator = () => {
     }));
   }, []);
 
-  const containerVariants = {
-    initial: { opacity: 0, y: 20 },
-    animate: { opacity: 1, y: 0 },
-  };
-
   return (
     <>
       <Helmet>
-        <title>Password Generator - ManyTool | Secure Password Creation</title>
+        <title>Password Generator | ManyTool</title>
       </Helmet>
 
-      <motion.div
-        variants={containerVariants}
-        initial="initial"
-        animate="animate"
-        className="max-w-4xl mx-auto"
-      >
-        {/* Custom Seed UI Section */}
-        <div className="bg-[#1e293b] rounded-xl shadow-lg p-6 mb-6 border border-cyan-500/30">
-           <label className="flex items-center gap-3 mb-4 cursor-pointer">
-              <input type="checkbox" checked={useCustomSeed} onChange={(e) => setUseCustomSeed(e.target.checked)} className="w-4 h-4 accent-cyan-500" />
-              <span className="font-semibold text-gray-300">Enable Custom Seed (Advanced Security)</span>
-           </label>
-           {useCustomSeed && (
-             <input type="text" placeholder="Enter your seed (e.g., aman@123)" value={seed} onChange={(e) => setSeed(e.target.value)} className="w-full p-3 rounded-lg bg-[#0f172a] border border-cyan-500/30 text-white" />
-           )}
-        </div>
+      {/* Cyber Neon Grid Texture & Ambient Glows */}
+      <div className="pointer-events-none fixed inset-0 overflow-hidden z-0">
+        <div className="absolute top-[15%] left-[15%] w-[550px] h-[550px] rounded-full bg-cyan-500/10 blur-[150px]" />
+        <div className="absolute bottom-[10%] right-[10%] w-[550px] h-[550px] rounded-full bg-emerald-500/10 blur-[150px]" />
+        
+        {/* Neon Cyber Grid Overlay */}
+        <div className="absolute inset-0 opacity-[0.035] bg-[linear-gradient(to_right,#06b6d4_1px,transparent_1px),linear-gradient(to_bottom,#06b6d4_1px,transparent_1px)] bg-[size:3.5rem_3.5rem]" />
 
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="mb-8"
-        >
-          <div className="flex items-center gap-3 mb-3">
-            <div className="p-2 bg-cyan-500 rounded-lg shadow-[0_0_15px_rgba(6,182,212,0.5)]">
-              <Lock className="w-6 h-6 text-white" />
-            </div>
-            <h1 className="text-4xl font-bold text-gray-900 dark:text-white">
+        {/* Security Watermarks */}
+        <div className="absolute inset-0 flex items-center justify-center opacity-[0.025] select-none">
+          <ShieldCheck size={600} className="text-cyan-400 translate-x-32 -translate-y-10" />
+          <Lock size={500} className="text-emerald-400 -translate-x-48 translate-y-20" />
+        </div>
+      </div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 15 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: "easeOut" }}
+        className="relative z-10 max-w-7xl mx-auto space-y-6 pb-16 px-4 sm:px-6 pt-4"
+      >
+        
+        {/* Text Utilities Exact Header Structure */}
+        <header className="flex flex-col md:flex-row md:items-end justify-between border-b border-cyan-500/20 pb-6 gap-4">
+          <div className="space-y-2">
+            <span className="px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-semibold tracking-wider uppercase inline-flex items-center gap-1.5 font-mono">
+              <ShieldCheck size={14} /> SECURITY SUITE
+            </span>
+            <h1 className="text-4xl font-extrabold tracking-tight text-white">
               Password Generator
             </h1>
           </div>
-          <p className="text-gray-600 dark:text-gray-400 text-lg">
-            Create strong, secure passwords with customizable options.
+          <p className="text-gray-400 text-sm max-w-md font-mono">
+            Lightning-fast, private, and secure cryptographic credential generator designed for high productivity.
           </p>
-        </motion.div>
+        </header>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.15 }}
-            className="lg:col-span-2 space-y-6"
-          >
-            {/* Password Box */}
-            <div className="bg-[#1e293b] rounded-xl shadow-lg p-6 border border-cyan-500/30">
-              <label className="block text-sm font-semibold text-gray-300 mb-3">
-                Generated Password
-              </label>
+        {/* Hero Display Box (Exact match to Text Utilities Main Box Style) */}
+        <div className="relative p-6 sm:p-8 rounded-3xl bg-slate-900/60 backdrop-blur-2xl border border-cyan-500/30 shadow-[0_0_50px_-12px_rgba(6,182,212,0.15)] space-y-4">
+          
+          <div className="flex items-center justify-between text-xs text-gray-400 uppercase tracking-wider font-mono">
+            <span className="flex items-center gap-2 text-cyan-400 font-bold">
+              <KeyRound size={15} /> Generated Credential
+            </span>
+            <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold text-slate-950 uppercase ${strength.color}`}>
+              {strength.label} Strength
+            </span>
+          </div>
 
-              <div className="flex gap-2">
-                <div className="relative flex-1 bg-[#0f172a] rounded-lg p-4 border border-gray-600">
-                  <p className="font-mono text-lg text-white break-all">
-                    {showPassword
-                      ? password
-                      : password.replace(/./g, '*')}
-                  </p>
-                </div>
+          <div className="min-h-[90px] flex items-center justify-between gap-4 p-5 rounded-2xl bg-slate-950/80 border border-cyan-500/20 shadow-inner">
+            <p className="font-mono text-xl sm:text-2xl text-cyan-300 tracking-wider break-all select-all font-medium">
+              {showPassword ? password : password.replace(/./g, '•')}
+            </p>
+          </div>
 
-                <Tooltip text="Toggle password visibility">
+          {/* Integrated Action Toolbar (Exact match to Text Utilities action bar) */}
+          <div className="p-2.5 bg-slate-950/90 backdrop-blur-xl rounded-2xl border border-cyan-500/30 flex flex-wrap items-center justify-between gap-3 shadow-xl">
+            
+            <div className="flex flex-wrap items-center gap-2">
+              <Tooltip text="Generate fresh password">
                 <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="p-4 rounded-lg bg-cyan-900/30 text-cyan-400 hover:bg-cyan-900/50"
-                  type="button"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => generatePassword(true)}
+                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-emerald-500 hover:from-cyan-400 hover:to-emerald-400 text-slate-950 font-bold text-xs uppercase tracking-wider flex items-center gap-2 shadow-lg shadow-cyan-500/20 transition-all cursor-pointer font-mono"
                 >
-                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  <RefreshCw size={14} className="animate-spin-slow" /> Generate
                 </motion.button>
-                </Tooltip>
+              </Tooltip>
 
-                <Tooltip text="Copy password">
-                <CopyButton
-                  text={password}
-                  onCopy={() => showToast('Password copied!', 'success', 2000)}
-                />
-                </Tooltip>
-              </div>
+              <Tooltip text="Toggle password visibility">
+                <button
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-cyan-300 border border-cyan-500/30 text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer font-mono"
+                >
+                  {showPassword ? <EyeOff size={14} /> : <Eye size={14} />}
+                  <span>{showPassword ? 'Hide' : 'Show'}</span>
+                </button>
+              </Tooltip>
+
+              <Tooltip text="Copy password to clipboard">
+                <div className="px-2 py-1 bg-slate-900 hover:bg-slate-800 rounded-xl border border-cyan-500/30 flex items-center transition-all">
+                  <CopyButton
+                    text={password}
+                    onCopy={() => showToast('Password copied!', 'success', 2000)}
+                  />
+                </div>
+              </Tooltip>
+
+              <Tooltip text="Save password to session history">
+                <button
+                  onClick={handleSaveToHistory}
+                  className="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-emerald-400 border border-emerald-500/40 text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer font-mono"
+                >
+                  <Save size={14} />
+                  <span>Save</span>
+                </button>
+              </Tooltip>
             </div>
 
-            {/* Strength Indicator */}
-            <div className="bg-[#1e293b] rounded-xl shadow-lg p-6 border border-cyan-500/30">
-              <div className="flex items-center justify-between mb-3">
-                <label className="text-sm font-semibold text-gray-300">
-                  Password Strength
-                </label>
-                <span className={`text-sm font-bold px-3 py-1 rounded-full text-white ${strength.color}`}>
+            {/* Quick Length Presets */}
+            <div className="flex items-center gap-1.5 bg-slate-900 p-1 rounded-xl border border-cyan-500/30 font-mono">
+              <span className="text-[10px] text-cyan-400 px-2 uppercase font-bold">Quick:</span>
+              <button onClick={() => { setLength(12); generatePassword(true); }} className={`px-2.5 py-1 text-xs rounded-lg transition-all ${length === 12 ? 'bg-cyan-500 text-slate-950 font-bold' : 'text-gray-300 hover:bg-slate-800'}`}>12</button>
+              <button onClick={() => { setLength(16); generatePassword(true); }} className={`px-2.5 py-1 text-xs rounded-lg transition-all ${length === 16 ? 'bg-cyan-500 text-slate-950 font-bold' : 'text-gray-300 hover:bg-slate-800'}`}>16</button>
+              <button onClick={() => { setLength(24); generatePassword(true); }} className={`px-2.5 py-1 text-xs rounded-lg transition-all ${length === 24 ? 'bg-cyan-500 text-slate-950 font-bold' : 'text-gray-300 hover:bg-slate-800'}`}>24</button>
+            </div>
+
+          </div>
+
+        </div>
+
+        {/* Bento Sub-Cards Grid (Matching Text Utilities Lower Section) */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          
+          {/* Card 1: Strength Analysis */}
+          <div className="p-6 rounded-3xl bg-slate-900/60 backdrop-blur-2xl border border-cyan-500/30 shadow-xl space-y-4 flex flex-col justify-between font-mono">
+            <div className="space-y-2">
+              <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider block">
+                Entropy & Security
+              </span>
+              <div className="flex items-center justify-between">
+                <span className="text-2xl font-black text-white">{strength.score}%</span>
+                <span className={`text-xs font-bold px-2.5 py-1 rounded-full text-slate-950 uppercase ${strength.color}`}>
                   {strength.label}
                 </span>
               </div>
-
-              <div className="w-full bg-gray-900 rounded-full h-3 overflow-hidden">
-                <motion.div
-                  initial={{ width: 0 }}
-                  animate={{ width: `${strength.score}%` }}
-                  className={`h-full ${strength.color}`}
-                />
-              </div>
-
-              <div className="mt-3 grid grid-cols-2 gap-2 text-xs text-gray-400">
-                <p>Length: <span className="font-semibold text-white">{password.length}</span></p>
-                <p>Entropy: <span className="font-semibold text-white">{strength.score}%</span></p>
-              </div>
             </div>
 
-            {/* Length Slider */}
-            <div className="bg-[#1e293b] rounded-xl shadow-lg p-6 border border-cyan-500/30">
-              <div className="flex items-center justify-between mb-4">
-                <label className="text-sm font-semibold text-gray-300">
-                  Password Length
-                </label>
-                <span className="text-2xl font-bold text-cyan-400">
-                  {length}
-                </span>
-              </div>
-
-              <input
-                type="range"
-                min="8"
-                max="128"
-                value={length}
-                onChange={(e) => setLength(parseInt(e.target.value))}
-                className="w-full h-2 bg-gray-900 rounded-lg cursor-pointer accent-cyan-500"
+            <div className="w-full bg-slate-950 rounded-full h-2.5 overflow-hidden border border-cyan-500/30 p-0.5">
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: `${strength.score}%` }}
+                className={`h-full rounded-full ${strength.color}`}
+                transition={{ duration: 0.5, ease: "easeOut" }}
               />
             </div>
-          </motion.div>
 
-          {/* Options & Generate */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.2 }}
-            className="space-y-4"
-          >
-            {/* Character Types */}
-            <div className="bg-[#1e293b] rounded-xl shadow-lg p-6 border border-cyan-500/30 space-y-4">
-              <h3 className="text-sm font-semibold text-gray-300 uppercase tracking-wider">
-                Character Types
-              </h3>
+            <p className="text-xs text-gray-400">
+              Calculated using character variety and bit entropy length.
+            </p>
+          </div>
 
+          {/* Card 2: Length Configurator */}
+          <div className="p-6 rounded-3xl bg-slate-900/60 backdrop-blur-2xl border border-cyan-500/30 shadow-xl space-y-4 flex flex-col justify-between font-mono">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                Password Length
+              </span>
+              <span className="text-2xl font-black text-cyan-400">
+                {length}
+              </span>
+            </div>
+
+            <input
+              type="range"
+              min="8"
+              max="128"
+              value={length}
+              onChange={(e) => setLength(parseInt(e.target.value))}
+              className="w-full h-2 bg-slate-950 rounded-lg cursor-pointer accent-cyan-400 border border-cyan-500/30"
+            />
+
+            <div className="flex justify-between text-[10px] text-gray-500">
+              <span>MIN: 8</span>
+              <span>DEFAULT: 16</span>
+              <span>MAX: 128</span>
+            </div>
+          </div>
+
+          {/* Card 3: Character Matrix */}
+          <div className="p-6 rounded-3xl bg-slate-900/60 backdrop-blur-2xl border border-cyan-500/30 shadow-xl space-y-3 font-mono">
+            <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider block mb-1">
+              Character Matrix
+            </span>
+
+            <div className="grid grid-cols-2 gap-2">
               {[
-                { key: 'uppercase', label: 'Uppercase (A-Z)' },
-                { key: 'lowercase', label: 'Lowercase (a-z)' },
-                { key: 'numbers', label: 'Numbers (0-9)' },
-                { key: 'symbols', label: 'Symbols (!@#$%)' },
-              ].map((option) => (
-                <label
-                  key={option.key}
-                  className="flex items-center gap-3 cursor-pointer text-sm text-gray-300"
+                { key: 'uppercase', label: 'Uppercase', sub: 'A-Z' },
+                { key: 'lowercase', label: 'Lowercase', sub: 'a-z' },
+                { key: 'numbers', label: 'Numbers', sub: '0-9' },
+                { key: 'symbols', label: 'Symbols', sub: '!@#$' },
+              ].map((item) => (
+                <button
+                  key={item.key}
+                  onClick={() => toggleOption(item.key)}
+                  className={`p-2.5 rounded-xl border text-left transition-all flex items-center justify-between cursor-pointer ${
+                    options[item.key]
+                      ? 'bg-cyan-500/15 border-cyan-400/60 text-cyan-300 shadow-[0_0_10px_rgba(6,182,212,0.15)]'
+                      : 'bg-slate-950/60 border-cyan-500/20 text-gray-500 hover:text-gray-400'
+                  }`}
                 >
-                  <input
-                    type="checkbox"
-                    checked={options[option.key]}
-                    onChange={() => toggleOption(option.key)}
-                    className="accent-cyan-500"
-                  />
-                  {option.label}
-                </label>
+                  <div>
+                    <p className="text-xs font-bold leading-tight">{item.label}</p>
+                    <span className="text-[10px] opacity-70 font-mono">{item.sub}</span>
+                  </div>
+                  {options[item.key] && <CheckCircle2 size={14} className="text-cyan-400 shrink-0" />}
+                </button>
               ))}
             </div>
+          </div>
 
-            {/* Generate Button */}
-            <Tooltip text="Generate a new secure password">
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => generatePassword(true)}
-              className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-cyan-500 hover:bg-cyan-600 text-white rounded-lg font-bold shadow-[0_0_15px_rgba(6,182,212,0.3)]"
-            >
-              <RefreshCw className="w-5 h-5" />
-              Generate
-            </motion.button>
-            </Tooltip>
-            
-            {/* Save Button */}
-            <Tooltip text="Save current password to history">
-            <button onClick={handleSaveToHistory} className="w-full py-3 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-bold flex items-center justify-center gap-2 border border-cyan-500">
-               <Save className="w-5 h-5" /> Save to History
-            </button>
-            </Tooltip>
-
-            {/* Quick Actions */}
-            <div className="bg-[#1e293b] rounded-xl shadow-lg p-6 border border-cyan-500/30">
-              <p className="text-xs font-semibold text-gray-400 mb-3">
-                Quick Actions
-              </p>
-              <div className="space-y-2">
-                <button onClick={() => {setLength(12); generatePassword(true);}} className="w-full py-2 bg-[#0f172a] border border-cyan-500/30 rounded text-xs text-cyan-300">12 chars (weak)</button>
-                <button onClick={() => {setLength(16); generatePassword(true);}} className="w-full py-2 bg-[#0f172a] border border-cyan-500/30 rounded text-xs text-cyan-300">16 chars (good)</button>
-                <button onClick={() => {setLength(24); generatePassword(true);}} className="w-full py-2 bg-[#0f172a] border border-cyan-500/30 rounded text-xs text-cyan-300">24 chars (strong)</button>
-              </div>
-            </div>
-          </motion.div>
         </div>
+
+        {/* Custom Seed Section */}
+        <div className="p-5 rounded-2xl bg-slate-900/40 backdrop-blur-xl border border-cyan-500/30 space-y-3 font-mono">
+          <label className="flex items-center gap-3 cursor-pointer">
+            <input 
+              type="checkbox" 
+              checked={useCustomSeed} 
+              onChange={(e) => setUseCustomSeed(e.target.checked)} 
+              className="w-4 h-4 accent-cyan-400 rounded cursor-pointer" 
+            />
+            <span className="font-semibold text-xs text-cyan-300 uppercase tracking-wider">
+              Advanced: Enable Custom Seed String Prefix
+            </span>
+          </label>
+          
+          <AnimatePresence>
+            {useCustomSeed && (
+              <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}>
+                <input 
+                  type="text" 
+                  placeholder="Enter custom seed prefix (e.g., aman@123)" 
+                  value={seed} 
+                  onChange={(e) => setSeed(e.target.value)} 
+                  className="w-full px-4 py-3 rounded-xl bg-slate-950 border border-cyan-500/40 text-cyan-300 font-mono text-xs outline-none focus:border-cyan-400 transition-all shadow-inner mt-2" 
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
       </motion.div>
       <Toast toasts={toasts} onRemove={removeToast} />
     </>

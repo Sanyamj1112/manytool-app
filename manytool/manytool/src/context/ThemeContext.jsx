@@ -9,15 +9,17 @@ import React, { createContext, useState, useEffect, useCallback, useMemo } from 
 export const ThemeContext = createContext(undefined);
 
 export const ThemeProvider = ({ children }) => {
-  const [isDark, setIsDark] = useState(false);
+  // Hamesha true rakha hai taaki default hamesha dark rahe
+  const [isDark, setIsDark] = useState(true);
   const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
-    const storedTheme = localStorage.getItem('manytool-theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    // Light mode option ko bypass karke hamesha dark set kar rahe hain
+    const htmlElement = document.documentElement;
+    htmlElement.classList.add('dark');
+    localStorage.setItem('manytool-theme', 'dark');
     
-    const initialTheme = storedTheme ? storedTheme === 'dark' : prefersDark;
-    setIsDark(initialTheme);
+    setIsDark(true);
     setIsInitialized(true);
   }, []);
 
@@ -25,32 +27,29 @@ export const ThemeProvider = ({ children }) => {
     if (!isInitialized) return;
 
     const htmlElement = document.documentElement;
-    if (isDark) {
-      htmlElement.classList.add('dark');
-      localStorage.setItem('manytool-theme', 'dark');
-    } else {
-      htmlElement.classList.remove('dark');
-      localStorage.setItem('manytool-theme', 'light');
-    }
-  }, [isDark, isInitialized]);
+    // Chahe kuch bhi ho, class hamesha 'dark' hi rahegi
+    htmlElement.classList.add('dark');
+    localStorage.setItem('manytool-theme', 'dark');
+  }, [isInitialized]);
 
+  // Toggle ya set theme ab hamesha dark ko hi force karega
   const toggleTheme = useCallback(() => {
-    setIsDark(prev => !prev);
+    setIsDark(true);
   }, []);
 
   const setTheme = useCallback((theme) => {
-    setIsDark(theme === 'dark' || theme === true);
+    setIsDark(true);
   }, []);
 
   const value = useMemo(
     () => ({
-      isDark,
+      isDark: true,
       toggleTheme,
       setTheme,
-      theme: isDark ? 'dark' : 'light',
+      theme: 'dark',
       isInitialized,
     }),
-    [isDark, toggleTheme, setTheme, isInitialized]
+    [toggleTheme, setTheme, isInitialized]
   );
 
   return (

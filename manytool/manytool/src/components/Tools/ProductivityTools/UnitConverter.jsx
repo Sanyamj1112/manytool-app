@@ -1,21 +1,7 @@
 /**
- * UnitConverter.jsx
- * ─────────────────────────────────────────────────────────────
- * Real-time unit conversion tool with multiple measurement systems
- * 
- * Features:
- * - Length, weight, temperature, volume conversions
- * - Real-time conversion
- * - Multiple unit categories
- * - Bidirectional conversion
- * - Copy results to clipboard
- * - Responsive design
- * 
- * @version 1.0.0
- * @requires react@^18.2.0
- * @requires framer-motion@^10.16.16
- * @requires react-helmet-async@^2.0.4
- * @requires lucide-react@^0.308.0
+ * @file UnitConverter.jsx
+ * @description Unit Converter with conflict-free Tailwind shadows and ambient neon glowing bento layout.
+ * @version 2.4.1
  */
 
 import React, { useState, useMemo, useCallback } from 'react';
@@ -28,17 +14,6 @@ import { useToast } from '@/Hooks/useToast';
 import Toast from '@/components/common/Toast';
 import Tooltip from '@/components/common/Tooltip';
 
-/**
- * UnitConverter Component
- * ─────────────────────────────────────────────────────────────
- * Convert between different units of measurement
- * 
- * @component
- * @returns {React.ReactElement} Unit converter tool
- * 
- * @example
- * <UnitConverter />
- */
 const UnitConverter = () => {
   const [category, setCategory] = useState('length');
   const [inputValue, setInputValue] = useState('1');
@@ -98,7 +73,6 @@ const UnitConverter = () => {
     const num = parseFloat(value);
     const units = conversionData[cat].units;
 
-    // Special handling for temperature
     if (cat === 'temperature') {
       if (from === 'c' && to === 'f') return ((num * 9) / 5 + 32).toFixed(6);
       if (from === 'c' && to === 'k') return (num + 273.15).toFixed(6);
@@ -109,25 +83,21 @@ const UnitConverter = () => {
       if (from === to) return num.toFixed(6);
     }
 
-    // Standard conversion
     const baseValue = num * units[from].toBase;
     const result = baseValue / units[to].toBase;
     return result.toFixed(6);
   }, []);
 
-  // Calculate result
   const result = useMemo(
     () => convert(inputValue, fromUnit, toUnit, category),
     [inputValue, fromUnit, toUnit, category, convert]
   );
 
-  // Swap units
   const swapUnits = useCallback(() => {
     setFromUnit(toUnit);
     setToUnit(fromUnit);
   }, [fromUnit, toUnit]);
 
-  // Animation variants
   const containerVariants = {
     initial: { opacity: 0, y: 20 },
     animate: { opacity: 1, y: 0 },
@@ -139,39 +109,37 @@ const UnitConverter = () => {
     <>
       <Helmet>
         <title>Unit Converter - ManyTool | Convert Measurements</title>
-        <meta
-          name="description"
-          content="Convert between different units of length, weight, temperature, and volume. Real-time conversion with instant results."
-        />
-        <meta
-          name="keywords"
-          content="unit converter, length converter, weight converter, temperature converter, volume converter"
-        />
-        <meta name="author" content="ManyTool" />
       </Helmet>
+
+      {/* Word Counter Style Rich Ambient Lighting & Neon Glows */}
+      <div className="pointer-events-none fixed inset-0 overflow-hidden z-0">
+        <div className="absolute top-[10%] left-[5%] w-[650px] h-[650px] rounded-full bg-teal-500/15 blur-[160px]" />
+        <div className="absolute top-[40%] right-[5%] w-[650px] h-[650px] rounded-full bg-indigo-600/15 blur-[160px]" />
+        <div className="absolute bottom-[5%] left-[30%] w-[550px] h-[550px] rounded-full bg-emerald-500/15 blur-[150px]" />
+        <div className="absolute inset-0 opacity-[0.04] bg-[linear-gradient(to_right,#14b8a6_1px,transparent_1px),linear-gradient(to_bottom,#14b8a6_1px,transparent_1px)] bg-[size:4rem_4rem]" />
+      </div>
 
       <motion.div
         variants={containerVariants}
         initial="initial"
         animate="animate"
-        className="max-w-5xl mx-auto"
+        className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 pt-4 pb-16 space-y-8"
       >
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="mb-8"
         >
           <div className="flex items-center gap-3 mb-3">
-            <div className="p-2 bg-gradient-to-br from-teal-500 to-green-600 rounded-lg">
-              <Gauge className="w-6 h-6 text-white" />
+            <div className="p-2.5 bg-gradient-to-br from-teal-400 to-emerald-600 rounded-xl shadow-lg shadow-teal-500/30">
+              <Gauge className="w-6 h-6 text-slate-950" />
             </div>
-            <h1 className="text-4xl font-bold text-gray-900 dark:text-white">
+            <h1 className="text-4xl font-bold text-white tracking-tight">
               Unit Converter
             </h1>
           </div>
-          <p className="text-gray-600 dark:text-gray-400 text-lg">
+          <p className="text-gray-400 text-lg">
             Convert between different units instantly.
           </p>
         </motion.div>
@@ -181,142 +149,148 @@ const UnitConverter = () => {
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.15 }}
-          className="mb-8 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 border border-gray-200 dark:border-gray-700"
+          className="bg-slate-900/60 backdrop-blur-2xl rounded-3xl p-5 border border-teal-500/30 shadow-[0_0_50px_-12px_rgba(20,184,166,0.15)]"
         >
-          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4">
+          <label className="block text-xs font-semibold text-gray-300 mb-3 uppercase tracking-wider font-mono">
             Measurement Type
           </label>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             {Object.entries(conversionData).map(([key, data]) => (
               <Tooltip key={key} text={`Select ${data.label} converter`}>
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => {
-                  setCategory(key);
-                  const units = Object.keys(data.units);
-                  setFromUnit(units[0]);
-                  setToUnit(units[1]);
-                }}
-                className={`px-4 py-2 rounded-lg font-medium transition-all ${
-                  category === key
-                    ? 'bg-teal-500 text-white shadow-lg'
-                    : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
-                }`}
-                type="button"
-              >
-                {data.label}
-              </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => {
+                    setCategory(key);
+                    const units = Object.keys(data.units);
+                    setFromUnit(units[0]);
+                    setToUnit(units[1]);
+                  }}
+                  className={`w-full px-4 py-3 rounded-2xl font-medium transition-all cursor-pointer ${
+                    category === key
+                      ? 'bg-teal-400 text-slate-950 font-bold shadow-lg shadow-teal-400/30'
+                      : 'bg-slate-950/80 border border-white/5 text-gray-300 hover:bg-slate-800'
+                  }`}
+                  type="button"
+                >
+                  {data.label}
+                </motion.button>
               </Tooltip>
             ))}
           </div>
         </motion.div>
 
-        {/* Converter Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          {/* From Unit */}
+        {/* Converter Section with Conflict-Free Bento Glows */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          
+          {/* From Unit Box */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2 }}
-            className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700"
+            className="relative p-6 sm:p-8 rounded-3xl bg-slate-900/60 backdrop-blur-2xl border border-teal-500/40 shadow-[0_0_50px_-12px_rgba(20,184,166,0.2)] space-y-4"
           >
-            <label className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 block">
-              From
+            <label className="text-xs font-semibold text-gray-300 block uppercase tracking-wider font-mono">
+              From Measurement
             </label>
 
             <Tooltip text="Enter value to convert">
-            <InputField
-              name="from-value"
-              type="number"
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              placeholder="Enter value"
-              className="mb-4"
-            />
+              <InputField
+                name="from-value"
+                type="number"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                placeholder="Enter value"
+                className="w-full bg-slate-950/90 border border-teal-500/30 rounded-2xl p-4 text-white font-mono text-lg shadow-inner focus:border-teal-400"
+              />
             </Tooltip>
 
-            <label htmlFor="from-unit" className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 block">
-              Unit
-            </label>
-            <select
-              id="from-unit"
-              value={fromUnit}
-              onChange={(e) => setFromUnit(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500 dark:focus:ring-teal-400"
-            >
-              {Object.entries(currentUnits).map(([key, unit]) => (
-                <option key={key} value={key}>
-                  {unit.label}
-                </option>
-              ))}
-            </select>
+            <div className="space-y-2 pt-2">
+              <label htmlFor="from-unit" className="text-xs font-semibold text-gray-300 block uppercase tracking-wider font-mono">
+                Source Unit
+              </label>
+              <select
+                id="from-unit"
+                value={fromUnit}
+                onChange={(e) => setFromUnit(e.target.value)}
+                className="w-full px-4 py-3 border border-teal-500/30 rounded-2xl bg-slate-950/90 text-white font-mono text-sm outline-none focus:ring-2 focus:ring-teal-400 cursor-pointer shadow-inner"
+              >
+                {Object.entries(currentUnits).map(([key, unit]) => (
+                  <option key={key} value={key} className="bg-slate-900 text-white">
+                    {unit.label}
+                  </option>
+                ))}
+              </select>
+            </div>
           </motion.div>
 
-          {/* To Unit */}
+          {/* To Unit Box */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.25 }}
-            className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700"
+            className="relative p-6 sm:p-8 rounded-3xl bg-slate-900/60 backdrop-blur-2xl border border-teal-500/40 shadow-[0_0_50px_-12px_rgba(20,184,166,0.2)] space-y-4"
           >
-            <label className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 block">
-              To
+            <label className="text-xs font-semibold text-gray-300 block uppercase tracking-wider font-mono">
+              Converted Result
             </label>
 
-            <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3 mb-4 min-h-12 flex items-center">
-              <p className="text-gray-900 dark:text-white font-mono text-lg break-all">
+            <div className="bg-slate-950/90 rounded-2xl p-4 min-h-[60px] flex items-center border border-teal-500/30 shadow-inner">
+              <p className="text-teal-300 font-mono text-xl sm:text-2xl font-bold break-all select-all">
                 {result || '0'}
               </p>
             </div>
 
-            <label htmlFor="to-unit" className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 block">
-              Unit
-            </label>
-            <select
-              id="to-unit"
-              value={toUnit}
-              onChange={(e) => setToUnit(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500 dark:focus:ring-teal-400"
-            >
-              {Object.entries(currentUnits).map(([key, unit]) => (
-                <option key={key} value={key}>
-                  {unit.label}
-                </option>
-              ))}
-            </select>
+            <div className="space-y-2 pt-2">
+              <label htmlFor="to-unit" className="text-xs font-semibold text-gray-300 block uppercase tracking-wider font-mono">
+                Target Unit
+              </label>
+              <select
+                id="to-unit"
+                value={toUnit}
+                onChange={(e) => setToUnit(e.target.value)}
+                className="w-full px-4 py-3 border border-teal-500/30 rounded-2xl bg-slate-950/90 text-white font-mono text-sm outline-none focus:ring-2 focus:ring-teal-400 cursor-pointer shadow-inner"
+              >
+                {Object.entries(currentUnits).map(([key, unit]) => (
+                  <option key={key} value={key} className="bg-slate-900 text-white">
+                    {unit.label}
+                  </option>
+                ))}
+              </select>
+            </div>
           </motion.div>
+
         </div>
 
-        {/* Action Buttons */}
+        {/* Action Buttons Toolbar */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}
-          className="flex gap-4 mb-8"
+          className="p-3 bg-slate-900/80 backdrop-blur-xl rounded-2xl border border-teal-500/30 flex flex-wrap items-center justify-between gap-4 shadow-xl"
         >
           <Tooltip text="Swap from and to units">
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={swapUnits}
-            className="flex items-center justify-center gap-2 px-6 py-3 bg-teal-500 hover:bg-teal-600 text-white rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
-            type="button"
-          >
-            <ArrowRightLeft className="w-5 h-5" />
-            Swap
-          </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={swapUnits}
+              className="flex items-center justify-center gap-2 px-6 py-3 bg-teal-400 hover:bg-teal-300 text-slate-950 rounded-xl font-bold uppercase tracking-wider shadow-lg shadow-teal-400/25 transition-all duration-300 cursor-pointer font-mono text-xs"
+              type="button"
+            >
+              <ArrowRightLeft className="w-4 h-4" />
+              Swap Units
+            </motion.button>
           </Tooltip>
 
           {result && (
             <Tooltip text="Copy conversion result">
-            <CopyButton
-              text={`${inputValue} ${currentUnits[fromUnit].label} = ${result} ${currentUnits[toUnit].label}`}
-              onCopy={() => showToast('Conversion copied!', 'success', 2000)}
-              variant="outline"
-              className="flex-1"
-              label="Copy conversion"
-            />
+              <CopyButton
+                text={`${inputValue} ${currentUnits[fromUnit]?.label || fromUnit} = ${result} ${currentUnits[toUnit]?.label || toUnit}`}
+                onCopy={() => showToast('Conversion copied to clipboard!', 'success', 2000)}
+                variant="outline"
+                className="px-6 py-3 bg-slate-950 hover:bg-slate-800 text-teal-300 border border-teal-500/40 rounded-xl font-mono text-xs font-semibold transition-all cursor-pointer shadow-md"
+                label="Copy Conversion"
+              />
             </Tooltip>
           )}
         </motion.div>
@@ -326,16 +300,14 @@ const UnitConverter = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="p-4 bg-teal-50 dark:bg-teal-900/20 border border-teal-200 dark:border-teal-800 rounded-lg"
+          className="p-4 bg-teal-950/40 border border-teal-500/30 rounded-2xl backdrop-blur-xl shadow-xl"
         >
-          <p className="text-sm text-teal-900 dark:text-teal-200">
-            <span className="font-semibold">💡 Tip:</span> Select a measurement type above, enter your value, choose
-            your units, and get instant conversion results. Use the swap button to reverse the conversion.
+          <p className="text-xs text-teal-200 font-mono">
+            <span className="font-bold">💡 PRO TIP:</span> Select a measurement type above, enter your value, choose your units, and get instant conversion results. Use the swap button to reverse the conversion.
           </p>
         </motion.div>
       </motion.div>
 
-      {/* Toast Notification */}
       <Toast toasts={toasts} onRemove={removeToast} />
     </>
   );
