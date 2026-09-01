@@ -6,6 +6,7 @@ import { countTextMetrics } from '@/utils/textUtils';
 import { useToast } from '@/Hooks/useToast';
 import Toast from '@/components/common/Toast';
 import { fetchGroqAI } from '@/services/aiService';
+import ExportSuite from '@/components/common/ExportSuite';
 
 const WordCounter = () => {
   const [text, setText] = useState('');
@@ -141,7 +142,7 @@ const WordCounter = () => {
               />
             </div>
             
-            {/* Ultra-Attractive Glowing Action Bar with Hover Tooltips */}
+            {/* Ultra-Attractive Glowing Action Bar with Hover Tooltips & Export Suite */}
             <div className="flex flex-wrap items-center gap-3 bg-slate-900/90 backdrop-blur-2xl p-4 rounded-2xl border border-white/15 shadow-2xl">
               
               {/* Clear Button with Tooltip */}
@@ -149,7 +150,7 @@ const WordCounter = () => {
                 <motion.button 
                   whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.96 }}
                   onClick={handleClear} 
-                  className="flex items-center gap-2 px-4 py-2.5 bg-red-500/20 hover:bg-red-500/30 text-red-300 border border-red-500/40 rounded-xl font-semibold text-sm transition-all shadow-lg shadow-red-500/10"
+                  className="flex items-center gap-2 px-4 py-2.5 bg-red-500/20 hover:bg-red-500/30 text-red-300 border border-red-500/40 rounded-xl font-semibold text-sm transition-all shadow-lg shadow-red-500/10 cursor-pointer"
                 >
                   <RotateCcw size={16} className="text-red-400 animate-spin-slow" /> Clear
                 </motion.button>
@@ -166,7 +167,7 @@ const WordCounter = () => {
                   whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.96 }}
                   onClick={() => handleAIAction('complexity')} 
                   disabled={!!loading || !text} 
-                  className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-purple-600/30 to-indigo-600/30 hover:from-purple-600/40 hover:to-indigo-600/40 text-purple-200 border border-purple-500/50 rounded-xl font-semibold text-sm transition-all shadow-lg shadow-purple-500/20 disabled:opacity-40"
+                  className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-purple-600/30 to-indigo-600/30 hover:from-purple-600/40 hover:to-indigo-600/40 text-purple-200 border border-purple-500/50 rounded-xl font-semibold text-sm transition-all shadow-lg shadow-purple-500/20 disabled:opacity-40 cursor-pointer"
                 >
                   <Sparkles size={16} className="text-purple-400" /> {loading === 'complexity' ? 'Evaluating...' : 'Complexity'}
                 </motion.button>
@@ -181,7 +182,7 @@ const WordCounter = () => {
                   whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.96 }}
                   onClick={() => handleAIAction('tone')} 
                   disabled={!!loading || !text} 
-                  className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-emerald-600/30 to-teal-600/30 hover:from-emerald-600/40 hover:to-teal-600/40 text-emerald-200 border border-emerald-500/50 rounded-xl font-semibold text-sm transition-all shadow-lg shadow-emerald-500/20 disabled:opacity-40"
+                  className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-emerald-600/30 to-teal-600/30 hover:from-emerald-600/40 hover:to-teal-600/40 text-emerald-200 border border-emerald-500/50 rounded-xl font-semibold text-sm transition-all shadow-lg shadow-emerald-500/20 disabled:opacity-40 cursor-pointer"
                 >
                   <MessageSquare size={16} className="text-emerald-400" /> {loading === 'tone' ? 'Evaluating...' : 'Tone'}
                 </motion.button>
@@ -196,7 +197,7 @@ const WordCounter = () => {
                   whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.96 }}
                   onClick={() => handleAIAction('hinglish')} 
                   disabled={!!loading || !text} 
-                  className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-orange-600/30 to-amber-600/30 hover:from-orange-600/40 hover:to-amber-600/40 text-orange-200 border border-orange-500/50 rounded-xl font-semibold text-sm transition-all shadow-lg shadow-orange-500/20 disabled:opacity-40"
+                  className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-orange-600/30 to-amber-600/30 hover:from-orange-600/40 hover:to-amber-600/40 text-orange-200 border border-orange-500/50 rounded-xl font-semibold text-sm transition-all shadow-lg shadow-orange-500/20 disabled:opacity-40 cursor-pointer"
                 >
                   <Languages size={16} className="text-orange-400" /> {loading === 'hinglish' ? 'Converting...' : 'Hinglish'}
                 </motion.button>
@@ -204,6 +205,9 @@ const WordCounter = () => {
                   Convert text into Hinglish blend
                 </div>
               </div>
+
+              {/* One-Click Export Suite Integration */}
+              <ExportSuite data={text || "No text provided"} filename="word-counter-export" />
 
               {/* Target Suggestion Box with Tooltip */}
               <div className="flex items-center gap-1.5 bg-slate-950/90 p-1.5 rounded-xl border border-cyan-500/40 ml-auto shadow-lg shadow-cyan-500/10 relative group/tip">
@@ -217,7 +221,7 @@ const WordCounter = () => {
                   whileHover={{ scale: 1.06 }} whileTap={{ scale: 0.94 }}
                   onClick={() => handleAIAction('suggestion')} 
                   disabled={!!loading || !text} 
-                  className="flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white rounded-lg text-xs font-bold shadow-md shadow-cyan-500/30 transition-all disabled:opacity-40"
+                  className="flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white rounded-lg text-xs font-bold shadow-md shadow-cyan-500/30 transition-all disabled:opacity-40 cursor-pointer"
                 >
                   <Target size={14} className="text-cyan-200" /> {loading === 'suggestion' ? '...' : 'Suggest'}
                 </motion.button>

@@ -9,6 +9,9 @@ import Header from './components/layout/Header';
 import Sidebar from './components/layout/Sidebar';
 import Footer from './components/layout/Footer';
 
+// Common Components
+import CommandPalette from './components/common/CommandPalette';
+
 // Tool Components
 import WordCounter from './components/Tools/TextUtilities/WordCounter';
 import CaseConverter from './components/Tools/TextUtilities/CaseConverter';
@@ -109,6 +112,7 @@ function App() {
         <HistoryProvider>
           <Router>
             <RouteTracker />
+            <CommandPalette />
             <div className="min-h-screen text-gray-100 transition-colors duration-300 relative overflow-hidden bg-[#070913]">
               
               {/* Rich Organic Ambient Lighting Background */}
@@ -173,7 +177,7 @@ function App() {
                                 Welcome to <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-500 bg-clip-text text-transparent">ManyTool</span>
                               </h1>
                               <p className="text-gray-400 text-base sm:text-lg max-w-xl mx-auto font-mono">
-                                High-performance utilities built for modern workflows. Select a tool below to begin.
+                                High-performance utilities built for modern workflows. Press <strong className="text-cyan-400">Ctrl + K</strong> to search or select a tool below.
                               </p>
                             </div>
 

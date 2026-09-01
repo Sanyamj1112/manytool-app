@@ -1,7 +1,7 @@
 /**
  * @file PasswordGenerator.jsx
- * @description Enterprise-grade secure password generator matching the exact structural layout of Text Utilities with cyber security aesthetic.
- * @version 4.0.1
+ * @description Enterprise-grade secure password generator matching the exact structural layout of Text Utilities with cyber security aesthetic and sound micro-interactions.
+ * @version 4.1.0
  */
 
 import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react';
@@ -13,6 +13,7 @@ import { useToast } from '@/Hooks/useToast';
 import Toast from '@/components/common/Toast';
 import { useHistory } from '@/context/HistoryContext';
 import Tooltip from '@/components/common/Tooltip';
+import { playClickSound } from '@/utils/soundUtils';
 
 const PasswordGenerator = ({ onSave }) => {
   const [password, setPassword] = useState('');
@@ -62,6 +63,7 @@ const PasswordGenerator = ({ onSave }) => {
   }, []);
 
   const generatePassword = useCallback((showNotification = true) => {
+    playClickSound();
     let characters = '';
     if (options.uppercase) characters += charSets.uppercase;
     if (options.lowercase) characters += charSets.lowercase;
@@ -88,6 +90,7 @@ const PasswordGenerator = ({ onSave }) => {
   }, [length, options, seed, useCustomSeed, showToast]);
 
   const handleSaveToHistory = () => {
+    playClickSound();
     saveToHistory('Password Gen', password);
     showToast('Saved to history!', 'success', 2000);
     // Auto-toggle open sidebar when saved
@@ -106,6 +109,7 @@ const PasswordGenerator = ({ onSave }) => {
   const strength = useMemo(() => calculateStrength(password), [password, calculateStrength]);
 
   const toggleOption = useCallback((key) => {
+    playClickSound();
     setOptions((prev) => ({
       ...prev,
       [key]: !prev[key],
@@ -190,7 +194,7 @@ const PasswordGenerator = ({ onSave }) => {
 
               <Tooltip text="Toggle password visibility">
                 <button
-                  onClick={() => setShowPassword(!showPassword)}
+                  onClick={() => { playClickSound(); setShowPassword(!showPassword); }}
                   className="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-cyan-300 border border-cyan-500/30 text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer font-mono"
                 >
                   {showPassword ? <EyeOff size={14} /> : <Eye size={14} />}
@@ -199,10 +203,10 @@ const PasswordGenerator = ({ onSave }) => {
               </Tooltip>
 
               <Tooltip text="Copy password to clipboard">
-                <div className="px-2 py-1 bg-slate-900 hover:bg-slate-800 rounded-xl border border-cyan-500/30 flex items-center transition-all">
+                <div onClick={() => playClickSound()} className="px-2 py-1 bg-slate-900 hover:bg-slate-800 rounded-xl border border-cyan-500/30 flex items-center transition-all">
                   <CopyButton
                     text={password}
-                    onCopy={() => showToast('Password copied!', 'success', 2000)}
+                    onCopy={() => { playClickSound(); showToast('Password copied!', 'success', 2000); }}
                   />
                 </div>
               </Tooltip>
@@ -221,9 +225,9 @@ const PasswordGenerator = ({ onSave }) => {
             {/* Quick Length Presets */}
             <div className="flex items-center gap-1.5 bg-slate-900 p-1 rounded-xl border border-cyan-500/30 font-mono">
               <span className="text-[10px] text-cyan-400 px-2 uppercase font-bold">Quick:</span>
-              <button onClick={() => { setLength(12); generatePassword(true); }} className={`px-2.5 py-1 text-xs rounded-lg transition-all ${length === 12 ? 'bg-cyan-500 text-slate-950 font-bold' : 'text-gray-300 hover:bg-slate-800'}`}>12</button>
-              <button onClick={() => { setLength(16); generatePassword(true); }} className={`px-2.5 py-1 text-xs rounded-lg transition-all ${length === 16 ? 'bg-cyan-500 text-slate-950 font-bold' : 'text-gray-300 hover:bg-slate-800'}`}>16</button>
-              <button onClick={() => { setLength(24); generatePassword(true); }} className={`px-2.5 py-1 text-xs rounded-lg transition-all ${length === 24 ? 'bg-cyan-500 text-slate-950 font-bold' : 'text-gray-300 hover:bg-slate-800'}`}>24</button>
+              <button onClick={() => { playClickSound(); setLength(12); generatePassword(true); }} className={`px-2.5 py-1 text-xs rounded-lg transition-all ${length === 12 ? 'bg-cyan-500 text-slate-950 font-bold' : 'text-gray-300 hover:bg-slate-800'}`}>12</button>
+              <button onClick={() => { playClickSound(); setLength(16); generatePassword(true); }} className={`px-2.5 py-1 text-xs rounded-lg transition-all ${length === 16 ? 'bg-cyan-500 text-slate-950 font-bold' : 'text-gray-300 hover:bg-slate-800'}`}>16</button>
+              <button onClick={() => { playClickSound(); setLength(24); generatePassword(true); }} className={`px-2.5 py-1 text-xs rounded-lg transition-all ${length === 24 ? 'bg-cyan-500 text-slate-950 font-bold' : 'text-gray-300 hover:bg-slate-800'}`}>24</button>
             </div>
 
           </div>
@@ -277,7 +281,7 @@ const PasswordGenerator = ({ onSave }) => {
               min="8"
               max="128"
               value={length}
-              onChange={(e) => setLength(parseInt(e.target.value))}
+              onChange={(e) => { setLength(parseInt(e.target.value)); }}
               className="w-full h-2 bg-slate-950 rounded-lg cursor-pointer accent-cyan-400 border border-cyan-500/30"
             />
 
@@ -328,7 +332,7 @@ const PasswordGenerator = ({ onSave }) => {
             <input 
               type="checkbox" 
               checked={useCustomSeed} 
-              onChange={(e) => setUseCustomSeed(e.target.checked)} 
+              onChange={(e) => { playClickSound(); setUseCustomSeed(e.target.checked); }} 
               className="w-4 h-4 accent-cyan-400 rounded cursor-pointer" 
             />
             <span className="font-semibold text-xs text-cyan-300 uppercase tracking-wider">

@@ -7,6 +7,7 @@ import CopyButton from '@/components/common/CopyButton';
 import { useToast } from '@/Hooks/useToast';
 import Toast from '@/components/common/Toast';
 import { fetchGroqAI } from '@/services/aiService';
+import ExportSuite from '@/components/common/ExportSuite';
 
 const CASE_OPTIONS = [
   { id: 'upper', label: 'UPPERCASE' },
@@ -133,7 +134,7 @@ const CaseConverter = () => {
             />
           </div>
           
-          {/* Glowing Action Bar with Hover Tooltips */}
+          {/* Glowing Action Bar with Hover Tooltips & Export Suite */}
           <div className="flex flex-wrap items-center gap-3 bg-slate-900/90 backdrop-blur-2xl p-4 rounded-2xl border border-white/15 shadow-2xl">
             
             {/* Clear Button with Tooltip */}
@@ -141,7 +142,7 @@ const CaseConverter = () => {
               <motion.button 
                 whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.96 }}
                 onClick={handleClear} 
-                className="flex items-center gap-2 px-4 py-2.5 bg-red-500/20 hover:bg-red-500/30 text-red-300 border border-red-500/40 rounded-xl font-semibold text-sm transition-all shadow-lg"
+                className="flex items-center gap-2 px-4 py-2.5 bg-red-500/20 hover:bg-red-500/30 text-red-300 border border-red-500/40 rounded-xl font-semibold text-sm transition-all shadow-lg cursor-pointer"
               >
                 <RotateCcw size={16} /> Clear
               </motion.button>
@@ -158,7 +159,7 @@ const CaseConverter = () => {
                 whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.96 }}
                 onClick={() => handleAIAction('grammar')} 
                 disabled={loading} 
-                className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-emerald-600/30 to-teal-600/30 hover:from-emerald-600/40 hover:to-teal-600/40 text-emerald-200 border border-emerald-500/50 rounded-xl font-semibold text-sm transition-all shadow-lg disabled:opacity-40"
+                className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-emerald-600/30 to-teal-600/30 hover:from-emerald-600/40 hover:to-teal-600/40 text-emerald-200 border border-emerald-500/50 rounded-xl font-semibold text-sm transition-all shadow-lg disabled:opacity-40 cursor-pointer"
               >
                 <Sparkles size={16} className="text-emerald-400" /> {loading === 'grammar' ? 'Fixing...' : 'Fix Grammar'}
               </motion.button>
@@ -173,7 +174,7 @@ const CaseConverter = () => {
                 whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.96 }}
                 onClick={() => handleAIAction('summarize')} 
                 disabled={loading} 
-                className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-teal-600/30 to-cyan-600/30 hover:from-teal-600/40 hover:to-cyan-600/40 text-teal-200 border border-teal-500/50 rounded-xl font-semibold text-sm transition-all shadow-lg disabled:opacity-40"
+                className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-teal-600/30 to-cyan-600/30 hover:from-teal-600/40 hover:to-cyan-600/40 text-teal-200 border border-teal-500/50 rounded-xl font-semibold text-sm transition-all shadow-lg disabled:opacity-40 cursor-pointer"
               >
                 <Wand2 size={16} className="text-teal-400" /> {loading === 'summarize' ? 'Summarizing...' : 'Summarize'}
               </motion.button>
@@ -188,7 +189,7 @@ const CaseConverter = () => {
                 whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.96 }}
                 onClick={() => handleAIAction('promptPro')} 
                 disabled={loading} 
-                className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-cyan-600/30 to-blue-600/30 hover:from-cyan-600/40 hover:to-blue-600/40 text-cyan-200 border border-cyan-500/50 rounded-xl font-semibold text-sm transition-all shadow-lg disabled:opacity-40"
+                className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-cyan-600/30 to-blue-600/30 hover:from-cyan-600/40 hover:to-blue-600/40 text-cyan-200 border border-cyan-500/50 rounded-xl font-semibold text-sm transition-all shadow-lg disabled:opacity-40 cursor-pointer"
               >
                 <Terminal size={16} className="text-cyan-400" /> {loading === 'promptPro' ? 'Processing...' : 'Prompt Pro'}
               </motion.button>
@@ -196,6 +197,9 @@ const CaseConverter = () => {
                 Enhance prompt formatting & precision
               </div>
             </div>
+
+            {/* One-Click Export Suite Integration */}
+            <ExportSuite data={{ input: text, transformed: convertedCases }} filename="case-converter-export" />
 
           </div>
         </div>
