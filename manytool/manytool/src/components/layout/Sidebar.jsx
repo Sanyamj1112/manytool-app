@@ -6,7 +6,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, Type, Zap, History, X } from 'lucide-react';
+import { ChevronDown, Type, Zap, History, X, PanelLeftClose } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import { useHistory } from '@/context/HistoryContext';
 
@@ -65,10 +65,26 @@ const Sidebar = ({ isOpen = false, onClose }) => {
         ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
       `}>
         <div className="p-4 space-y-4">
+          
+          {/* Sidebar Top Header with Gemini-style Internal Collapse Toggle Button */}
+          <div className="flex items-center justify-between px-2 pb-2 border-b border-cyan-900/30">
+            <span className="text-[11px] font-bold text-cyan-400 uppercase tracking-widest font-mono">
+              Workspace
+            </span>
+            <button
+              onClick={onClose}
+              className="p-1.5 rounded-lg bg-cyan-950/50 hover:bg-cyan-900/60 text-cyan-400 border border-cyan-500/30 transition-all cursor-pointer shadow-sm"
+              title="Close sidebar"
+              type="button"
+            >
+              <PanelLeftClose size={16} />
+            </button>
+          </div>
+
           {/* Render Tools */}
           {Object.entries(toolsData).map(([id, cat]) => (
             <div key={id}>
-              <button onClick={() => setExpandedCategories(p => ({ ...p, [id]: !p[id] }))} className="flex items-center justify-between w-full px-3 py-2 text-xs font-bold text-cyan-400 uppercase tracking-widest hover:bg-cyan-900/20 rounded-lg">
+              <button onClick={() => setExpandedCategories(p => ({ ...p, [id]: !p[id] }))} className="flex items-center justify-between w-full px-3 py-2 text-xs font-bold text-cyan-400 uppercase tracking-widest hover:bg-cyan-900/20 rounded-lg cursor-pointer">
                 <span className="flex items-center gap-2"><div className={`p-1.5 rounded-md bg-gradient-to-br ${cat.color}`}><cat.icon className="w-3 h-3 text-white" /></div>{cat.label}</span>
                 <ChevronDown className={`w-4 h-4 transition-transform ${expandedCategories[id] ? 'rotate-180' : ''}`} />
               </button>
@@ -94,20 +110,20 @@ const Sidebar = ({ isOpen = false, onClose }) => {
           {/* History Section */}
           <div className="border-t border-cyan-900/30 pt-4">
             <div className="flex items-center justify-between px-3 py-2">
-              <button onClick={() => setExpandedCategories(p => ({ ...p, history: !p.history }))} className="flex items-center gap-2 text-xs font-bold text-cyan-400 uppercase">
+              <button onClick={() => setExpandedCategories(p => ({ ...p, history: !p.history }))} className="flex items-center gap-2 text-xs font-bold text-cyan-400 uppercase cursor-pointer">
                 <History className="w-3 h-3" /> History ({history.length})
               </button>
               <div className="flex gap-2">
                 {isSelectionMode ? (
                   <>
-                    <button onClick={deleteSelected} className="text-[10px] text-red-400 font-bold">Delete({selectedIds.length})</button>
-                    <button onClick={() => setIsSelectionMode(false)} className="text-[10px] text-gray-400">Cancel</button>
+                    <button onClick={deleteSelected} className="text-[10px] text-red-400 font-bold cursor-pointer">Delete({selectedIds.length})</button>
+                    <button onClick={() => setIsSelectionMode(false)} className="text-[10px] text-gray-400 cursor-pointer">Cancel</button>
                   </>
                 ) : (
                   history.length > 0 && (
                     <>
-                      <button onClick={() => setIsSelectionMode(true)} className="text-[10px] text-cyan-500 font-bold">Select</button>
-                      <button onClick={clearHistory} className="text-[10px] text-red-500 font-bold">Clear All</button>
+                      <button onClick={() => setIsSelectionMode(true)} className="text-[10px] text-cyan-500 font-bold cursor-pointer">Select</button>
+                      <button onClick={clearHistory} className="text-[10px] text-red-500 font-bold cursor-pointer">Clear All</button>
                     </>
                   )
                 )}
@@ -119,7 +135,7 @@ const Sidebar = ({ isOpen = false, onClose }) => {
                 <div key={item.id} className="flex items-center justify-between px-3 py-2 text-xs text-gray-300 hover:bg-cyan-900/20 rounded-lg transition group">
                   <div className="flex items-center truncate w-[80%]">
                     {isSelectionMode && (
-                      <input type="checkbox" checked={selectedIds.includes(item.id)} onChange={() => toggleSelect(item.id)} className="mr-2 accent-cyan-500" />
+                      <input type="checkbox" checked={selectedIds.includes(item.id)} onChange={() => toggleSelect(item.id)} className="mr-2 accent-cyan-500 cursor-pointer" />
                     )}
                     <div className="truncate">
                       <p className="font-semibold text-[10px] text-cyan-500">{item.tool}</p>
@@ -127,7 +143,7 @@ const Sidebar = ({ isOpen = false, onClose }) => {
                     </div>
                   </div>
                   {!isSelectionMode && (
-                    <button onClick={() => deleteHistoryItem(item.id)} className="text-red-400 hover:text-red-600 p-1 bg-red-900/20 rounded">
+                    <button onClick={() => deleteHistoryItem(item.id)} className="text-red-400 hover:text-red-600 p-1 bg-red-900/20 rounded cursor-pointer">
                       <X className="w-3 h-3" />
                     </button>
                   )}

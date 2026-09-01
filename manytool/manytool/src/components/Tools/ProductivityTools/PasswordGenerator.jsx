@@ -1,7 +1,7 @@
 /**
  * @file PasswordGenerator.jsx
  * @description Enterprise-grade secure password generator matching the exact structural layout of Text Utilities with cyber security aesthetic.
- * @version 4.0.0
+ * @version 4.0.1
  */
 
 import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react';
@@ -14,7 +14,7 @@ import Toast from '@/components/common/Toast';
 import { useHistory } from '@/context/HistoryContext';
 import Tooltip from '@/components/common/Tooltip';
 
-const PasswordGenerator = () => {
+const PasswordGenerator = ({ onSave }) => {
   const [password, setPassword] = useState('');
   const [length, setLength] = useState(16);
   const [showPassword, setShowPassword] = useState(false);
@@ -90,6 +90,10 @@ const PasswordGenerator = () => {
   const handleSaveToHistory = () => {
     saveToHistory('Password Gen', password);
     showToast('Saved to history!', 'success', 2000);
+    // Auto-toggle open sidebar when saved
+    if (typeof onSave === 'function') {
+      onSave();
+    }
   };
 
   useEffect(() => {
