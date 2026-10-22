@@ -1,23 +1,79 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://szbqxdqvwyqolplljatj.supabase.co';
-const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6YnF4ZHF2d3lxb2xwbGxqYXRqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc0ODU5ODQsImV4cCI6MjEwMzA2MTk4NH0.THPtcRINH2pYTcA5N_PCgP-5ETXYvjrNpECo3da_8hI';
+const DEFAULT_URL = 'https://szbqxdqvwyqolplljatj.supabase.co';
+const DEFAULT_KEY = 'sb_publishable_XeZCZrPGIRlKAjUEBgkQNQ_QPxj3NHb';
 
-export const supabase = createClient(supabaseUrl, supabaseKey);
+/**
+ * Validates and sanitizes a URL string.
+ * Returns null if the URL is missing, invalid, or does not start with http/https.
+ */
+const sanitizeUrl = (raw) => {
+  if (!raw || typeof raw !== 'string') return null;
+  let trimmed = raw.trim();
+  if (!trimmed || trimmed === 'undefined' || trimmed === 'null' || trimmed.length < 8) return null;
+  if (!trimmed.startsWith('http://') && !trimmed.startsWith('https://')) {
+    trimmed = 'https://' + trimmed;
+  }
+  try {
+    const parsed = new URL(trimmed);
+    if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
+      return trimmed;
+    }
+  } catch {
+    return null;
+  }
+  return null;
+};
+
+const sanitizeKey = (raw) => {
+  if (!raw || typeof raw !== 'string') return null;
+  const trimmed = raw.trim();
+  if (!trimmed || trimmed === 'undefined' || trimmed === 'null' || trimmed.length < 20) return null;
+  return trimmed;
+};
+
+// Safe initialization with fallback
+const targetUrl = sanitizeUrl(import.meta.env.VITE_SUPABASE_URL) || DEFAULT_URL;
+const targetKey = sanitizeKey(import.meta.env.VITE_SUPABASE_ANON_KEY) || DEFAULT_KEY;
+
+let clientInstance = null;
+try {
+  clientInstance = createClient(targetUrl, targetKey);
+} catch (err) {
+  console.warn('Supabase initialization fallback triggered:', err?.message);
+}
+
+// Fallback proxy so calling supabase.from(...).insert/select NEVER throws uncaught errors
+const safeFallback = {
+  from: () => ({
+    insert: () => Promise.resolve({ data: null, error: null }),
+    select: () => ({
+      order: () => ({
+        limit: () => Promise.resolve({ data: [], error: null }),
+      }),
+    }),
+  }),
+};
+
+export const supabase = clientInstance || safeFallback;
 
 // ─── Session ID (one per browser session, groups multiple tool visits together) ───
 const getSessionId = () => {
-  let sid = sessionStorage.getItem('mt_session_id');
-  if (!sid) {
-    sid = 'sess_' + Math.random().toString(36).slice(2, 11) + '_' + Date.now();
-    sessionStorage.setItem('mt_session_id', sid);
+  try {
+    let sid = sessionStorage.getItem('mt_session_id');
+    if (!sid) {
+      sid = 'sess_' + Math.random().toString(36).slice(2, 11) + '_' + Date.now();
+      sessionStorage.setItem('mt_session_id', sid);
+    }
+    return sid;
+  } catch {
+    return 'sess_' + Date.now();
   }
-  return sid;
 };
 
 // ─── User-Agent Parsing ───
 const parseUserAgent = () => {
-  const ua = navigator.userAgent;
+  const ua = navigator.userAgent || '';
 
   let deviceType = 'Desktop';
   if (/mobile/i.test(ua)) deviceType = 'Mobile';
@@ -46,7 +102,6 @@ let cachedGeoData = null;
 const fetchGeoData = async () => {
   if (cachedGeoData) return cachedGeoData;
   try {
-    // Single fast call: ipwho.is gives IP, City, Country, Country Code, and Flag
     const res = await fetch('https://ipwho.is/', { signal: AbortSignal.timeout(3500) });
     const data = await res.json();
 
@@ -59,8 +114,8 @@ const fetchGeoData = async () => {
       };
       return cachedGeoData;
     }
-  } catch (e) {
-    // Fallback if ipwho.is is blocked
+  } catch {
+    // Fallback if ipwho.is fails
   }
 
   try {
@@ -81,6 +136,7 @@ const fetchGeoData = async () => {
 // ─── Main Analytics Logger ───
 export const logAnalytics = async (toolName = 'Home Page') => {
   try {
+    if (!supabase || typeof supabase.from !== 'function') return;
     const sessionId = getSessionId();
     const { deviceType, osName, browser } = parseUserAgent();
     const geo = await fetchGeoData();
@@ -96,10 +152,10 @@ export const logAnalytics = async (toolName = 'Home Page') => {
       country: geo.country,
       country_code: geo.country_code,
       referrer: document.referrer || 'direct',
-      screen_width: window.screen.width,
+      screen_width: window.screen ? window.screen.width : 0,
     }]);
   } catch (error) {
-    // Silently fail — analytics should never break the app
-    console.warn('Analytics log failed:', error.message);
+    // Analytics should NEVER break the application
+    console.warn('Analytics log failed:', error?.message);
   }
 };
