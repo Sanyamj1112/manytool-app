@@ -5,6 +5,7 @@
  */
 
 import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
 import { Lock, RefreshCw, Copy, Eye, EyeOff, Save, KeyRound, ShieldCheck, Terminal, CheckCircle2, Shield } from 'lucide-react';
@@ -13,9 +14,30 @@ import { useToast } from '@/Hooks/useToast';
 import Toast from '@/components/common/Toast';
 import { useHistory } from '@/context/HistoryContext';
 import Tooltip from '@/components/common/Tooltip';
-import { playClickSound } from '@/utils/soundUtils';
+import ToolFAQ from '@/components/common/ToolFAQ';
+
+const passwordFaqs = [
+  {
+    q: 'Are passwords generated here cryptographically secure?',
+    a: 'Yes, 100%. Passwords are created using the browser-native cryptographically secure random number generator (window.crypto). No passwords ever touch any server.',
+  },
+  {
+    q: 'What is the recommended password length for strong security?',
+    a: 'Security experts recommend a minimum length of 14 to 16 characters, combining uppercase, lowercase, numbers, and special symbols.',
+  },
+  {
+    q: 'What does the Custom Seed option do?',
+    a: 'The Custom Seed allows you to prepend or embed custom memorable words or prefixes while preserving high algorithmic randomness.',
+  },
+  {
+    q: 'Can I copy the password in one click?',
+    a: 'Yes, clicking the Copy button copies the generated password directly to your system clipboard securely.',
+  },
+];
 
 const PasswordGenerator = ({ onSave }) => {
+  const location = useLocation();
+  const isStrong = location.pathname.includes('strong');
   const [password, setPassword] = useState('');
   const [length, setLength] = useState(16);
   const [showPassword, setShowPassword] = useState(false);
@@ -55,6 +77,7 @@ const PasswordGenerator = ({ onSave }) => {
     if (/[0-9]/.test(pwd)) score += 15;
     if (/[^a-zA-Z0-9]/.test(pwd)) score += 15;
     if (!/(.)\1{2,}/.test(pwd)) score += 5;
+    score = Math.min(100, score);
 
     if (score < 30) return { score, label: 'VULNERABLE', color: 'bg-red-500' };
     if (score < 60) return { score, label: 'MODERATE', color: 'bg-amber-500' };
@@ -63,7 +86,6 @@ const PasswordGenerator = ({ onSave }) => {
   }, []);
 
   const generatePassword = useCallback((showNotification = true) => {
-    playClickSound();
     let characters = '';
     if (options.uppercase) characters += charSets.uppercase;
     if (options.lowercase) characters += charSets.lowercase;
@@ -90,7 +112,6 @@ const PasswordGenerator = ({ onSave }) => {
   }, [length, options, seed, useCustomSeed, showToast]);
 
   const handleSaveToHistory = () => {
-    playClickSound();
     saveToHistory('Password Gen', password);
     showToast('Saved to history!', 'success', 2000);
     // Auto-toggle open sidebar when saved
@@ -109,7 +130,6 @@ const PasswordGenerator = ({ onSave }) => {
   const strength = useMemo(() => calculateStrength(password), [password, calculateStrength]);
 
   const toggleOption = useCallback((key) => {
-    playClickSound();
     setOptions((prev) => ({
       ...prev,
       [key]: !prev[key],
@@ -119,22 +139,22 @@ const PasswordGenerator = ({ onSave }) => {
   return (
     <>
       <Helmet>
-        <title>Password Generator | ManyTool</title>
+        <title>{isStrong ? 'Strong Password Generator Online | Random High-Entropy Passwords | ManyTool' : 'Free Strong Password Generator Online | ManyTool'}</title>
+        <meta name="description" content={isStrong ? 'Generate ultra-secure, unhackable passwords with symbols, numbers, and custom seeds. Free online strong password generator at ManyTool.' : 'Generate strong, secure, and random passwords instantly. Customize length and character types. Free, private, and client-side password generator at ManyTool.'} />
       </Helmet>
 
-      {/* Cyber Neon Grid Texture & Ambient Glows */}
+      {/* Cyberpunk Glassmorphism Background */}
       <div className="pointer-events-none fixed inset-0 overflow-hidden z-0">
-        <div className="absolute top-[15%] left-[15%] w-[550px] h-[550px] rounded-full bg-cyan-500/10 blur-[150px]" />
-        <div className="absolute bottom-[10%] right-[10%] w-[550px] h-[550px] rounded-full bg-emerald-500/10 blur-[150px]" />
+        {/* Primary glow orbs */}
+        <div className="absolute top-[5%] left-[10%] w-[600px] h-[600px] rounded-full bg-cyan-500/[0.07] blur-[180px] animate-pulse" style={{ animationDuration: '8s' }} />
+        <div className="absolute bottom-[5%] right-[5%] w-[500px] h-[500px] rounded-full bg-emerald-500/[0.06] blur-[160px] animate-pulse" style={{ animationDuration: '10s' }} />
+        <div className="absolute top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full bg-blue-600/[0.04] blur-[140px]" />
         
-        {/* Neon Cyber Grid Overlay */}
-        <div className="absolute inset-0 opacity-[0.035] bg-[linear-gradient(to_right,#06b6d4_1px,transparent_1px),linear-gradient(to_bottom,#06b6d4_1px,transparent_1px)] bg-[size:3.5rem_3.5rem]" />
-
-        {/* Security Watermarks */}
-        <div className="absolute inset-0 flex items-center justify-center opacity-[0.025] select-none">
-          <ShieldCheck size={600} className="text-cyan-400 translate-x-32 -translate-y-10" />
-          <Lock size={500} className="text-emerald-400 -translate-x-48 translate-y-20" />
-        </div>
+        {/* Subtle grid overlay */}
+        <div className="absolute inset-0 opacity-[0.025] bg-[linear-gradient(to_right,#06b6d4_1px,transparent_1px),linear-gradient(to_bottom,#06b6d4_1px,transparent_1px)] bg-[size:4rem_4rem]" />
+        
+        {/* Radial vignette */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(7,9,19,0.5)_70%)]" />
       </div>
 
       <motion.div
@@ -148,19 +168,19 @@ const PasswordGenerator = ({ onSave }) => {
         <header className="flex flex-col md:flex-row md:items-end justify-between border-b border-cyan-500/20 pb-6 gap-4">
           <div className="space-y-2">
             <span className="px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-semibold tracking-wider uppercase inline-flex items-center gap-1.5 font-mono">
-              <ShieldCheck size={14} /> SECURITY SUITE
+              <ShieldCheck size={14} /> {isStrong ? 'HIGH ENTROPY SECURITY' : 'SECURITY SUITE'}
             </span>
             <h1 className="text-4xl font-extrabold tracking-tight text-white">
-              Password Generator
+              {isStrong ? 'Strong Password Generator' : 'Password Generator'}
             </h1>
           </div>
           <p className="text-gray-400 text-sm max-w-md font-mono">
-            Lightning-fast, private, and secure cryptographic credential generator designed for high productivity.
+            {isStrong ? 'Generate tamper-proof, high-entropy cryptographic passwords with instant copy and local history.' : 'Lightning-fast, private, and secure cryptographic credential generator designed for high productivity.'}
           </p>
         </header>
 
         {/* Hero Display Box (Exact match to Text Utilities Main Box Style) */}
-        <div className="relative p-6 sm:p-8 rounded-3xl bg-slate-900/60 backdrop-blur-2xl border border-cyan-500/30 shadow-[0_0_50px_-12px_rgba(6,182,212,0.15)] space-y-4">
+        <div className="relative p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-slate-900/70 to-slate-950/80 backdrop-blur-xl border border-cyan-500/20 shadow-[0_0_60px_-12px_rgba(6,182,212,0.12),inset_0_1px_0_0_rgba(6,182,212,0.08)] space-y-4">
           
           <div className="flex items-center justify-between text-xs text-gray-400 uppercase tracking-wider font-mono">
             <span className="flex items-center gap-2 text-cyan-400 font-bold">
@@ -194,7 +214,7 @@ const PasswordGenerator = ({ onSave }) => {
 
               <Tooltip text="Toggle password visibility">
                 <button
-                  onClick={() => { playClickSound(); setShowPassword(!showPassword); }}
+                  onClick={() => setShowPassword(!showPassword)}
                   className="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-cyan-300 border border-cyan-500/30 text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer font-mono"
                 >
                   {showPassword ? <EyeOff size={14} /> : <Eye size={14} />}
@@ -203,10 +223,10 @@ const PasswordGenerator = ({ onSave }) => {
               </Tooltip>
 
               <Tooltip text="Copy password to clipboard">
-                <div onClick={() => playClickSound()} className="px-2 py-1 bg-slate-900 hover:bg-slate-800 rounded-xl border border-cyan-500/30 flex items-center transition-all">
+                <div className="px-2 py-1 bg-slate-900 hover:bg-slate-800 rounded-xl border border-cyan-500/30 flex items-center transition-all">
                   <CopyButton
                     text={password}
-                    onCopy={() => { playClickSound(); showToast('Password copied!', 'success', 2000); }}
+                    onCopy={() => showToast('Password copied!', 'success', 2000)}
                   />
                 </div>
               </Tooltip>
@@ -225,9 +245,9 @@ const PasswordGenerator = ({ onSave }) => {
             {/* Quick Length Presets */}
             <div className="flex items-center gap-1.5 bg-slate-900 p-1 rounded-xl border border-cyan-500/30 font-mono">
               <span className="text-[10px] text-cyan-400 px-2 uppercase font-bold">Quick:</span>
-              <button onClick={() => { playClickSound(); setLength(12); generatePassword(true); }} className={`px-2.5 py-1 text-xs rounded-lg transition-all ${length === 12 ? 'bg-cyan-500 text-slate-950 font-bold' : 'text-gray-300 hover:bg-slate-800'}`}>12</button>
-              <button onClick={() => { playClickSound(); setLength(16); generatePassword(true); }} className={`px-2.5 py-1 text-xs rounded-lg transition-all ${length === 16 ? 'bg-cyan-500 text-slate-950 font-bold' : 'text-gray-300 hover:bg-slate-800'}`}>16</button>
-              <button onClick={() => { playClickSound(); setLength(24); generatePassword(true); }} className={`px-2.5 py-1 text-xs rounded-lg transition-all ${length === 24 ? 'bg-cyan-500 text-slate-950 font-bold' : 'text-gray-300 hover:bg-slate-800'}`}>24</button>
+              <button onClick={() => { setLength(12); generatePassword(true); }} className={`px-2.5 py-1 text-xs rounded-lg transition-all ${length === 12 ? 'bg-cyan-500 text-slate-950 font-bold' : 'text-gray-300 hover:bg-slate-800'}`}>12</button>
+              <button onClick={() => { setLength(16); generatePassword(true); }} className={`px-2.5 py-1 text-xs rounded-lg transition-all ${length === 16 ? 'bg-cyan-500 text-slate-950 font-bold' : 'text-gray-300 hover:bg-slate-800'}`}>16</button>
+              <button onClick={() => { setLength(24); generatePassword(true); }} className={`px-2.5 py-1 text-xs rounded-lg transition-all ${length === 24 ? 'bg-cyan-500 text-slate-950 font-bold' : 'text-gray-300 hover:bg-slate-800'}`}>24</button>
             </div>
 
           </div>
@@ -332,7 +352,7 @@ const PasswordGenerator = ({ onSave }) => {
             <input 
               type="checkbox" 
               checked={useCustomSeed} 
-              onChange={(e) => { playClickSound(); setUseCustomSeed(e.target.checked); }} 
+              onChange={(e) => setUseCustomSeed(e.target.checked)} 
               className="w-4 h-4 accent-cyan-400 rounded cursor-pointer" 
             />
             <span className="font-semibold text-xs text-cyan-300 uppercase tracking-wider">
@@ -354,6 +374,8 @@ const PasswordGenerator = ({ onSave }) => {
             )}
           </AnimatePresence>
         </div>
+
+        <ToolFAQ faqs={passwordFaqs} title="Password Generator FAQs" />
 
       </motion.div>
       <Toast toasts={toasts} onRemove={removeToast} />

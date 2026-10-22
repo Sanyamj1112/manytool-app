@@ -1,0 +1,9 @@
+# robots.txt — ManyTool (manytool.in)
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://manytool.in/sitemap.xml
+
+# Disallow admin panel from crawlers
+Disallow: /admin-dashboard

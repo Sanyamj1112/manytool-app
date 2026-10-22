@@ -1,3 +1,66 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.4); }
+}
+
+@keyframes animate-spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin-slow {
+  animation: animate-spin-slow 3s linear infinite;
+}
+
+/* Custom Sleek Dark Scrollbars (Removes ugly default white browser scrollbar) */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: #070913;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(6, 182, 212, 0.2);
+  border-radius: 9999px;
+  transition: background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(6, 182, 212, 0.5);
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(6, 182, 212, 0.25) #070913;
+}
+
+/* Sidebar Specific Sleek Scrollbar */
+.sidebar-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+
+.sidebar-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar-scroll::-webkit-scrollbar-thumb {
+  background: rgba(6, 182, 212, 0.2);
+  border-radius: 9999px;
+}
+
+.sidebar-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(6, 182, 212, 0.6);
+}
+
+.sidebar-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(6, 182, 212, 0.2) transparent;
+}

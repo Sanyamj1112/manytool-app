@@ -1,8 +1,29 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
 import { Cake, Calendar, Clock, Activity, Heart, Wind, Sparkles, Timer, Flame, PartyPopper } from 'lucide-react';
 import Tooltip from '@/components/common/Tooltip';
+import ToolFAQ from '@/components/common/ToolFAQ';
+
+const ageCalculatorFaqs = [
+  {
+    q: 'How does the Age Calculator compute exact chronological age?',
+    a: 'It compares your date of birth against the current timestamp, accurately accounting for varying calendar days and leap years to calculate years, months, days, hours, and seconds.',
+  },
+  {
+    q: 'How is the Zodiac Sign determined?',
+    a: 'Your astrological sign is automatically determined based on your birth month and day according to standard Western Tropical Astrology charts.',
+  },
+  {
+    q: 'What does the Next Birthday Countdown show?',
+    a: 'It tracks the exact days, hours, and minutes remaining until your upcoming birthday celebration.',
+  },
+  {
+    q: 'Is my birth date stored or transmitted anywhere?',
+    a: 'No. All calculations are strictly processed locally within your browser and are never saved to any database.',
+  },
+];
 
 const ZODIAC = [
   { name: 'Capricorn', symbol: '♑', range: [12, 22, 1, 19] },
@@ -20,13 +41,10 @@ const ZODIAC = [
 ];
 
 const AgeCalculator = () => {
+  const location = useLocation();
+  const isZodiac = location.pathname.includes('zodiac');
   const [birthDate, setBirthDate] = useState('');
   const [now, setNow] = useState(new Date());
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  
-  // Cursor Fire Trail Particles State
-  const [fireTrails, setFireTrails] = useState([]);
-
   // Interactive Cake & Celebration States
   const [candleLit, setCandleLit] = useState(true);
   const [celebrating, setCelebrating] = useState(false);
@@ -37,34 +55,6 @@ const AgeCalculator = () => {
   useEffect(() => {
     const timer = setInterval(() => setNow(new Date()), 1000);
     return () => clearInterval(timer);
-  }, []);
-
-  // Cyber-Dark Mouse Tracker & Glowing Fire Trail Generator
-  useEffect(() => {
-    const handleMouseMove = (e) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
-      
-      const newParticle = {
-        id: Date.now() + Math.random(),
-        x: e.clientX,
-        y: e.clientY,
-      };
-      
-      setFireTrails((prev) => [...prev.slice(-10), newParticle]);
-    };
-
-    const handleTouchMove = (e) => {
-      if (e.touches.length > 0) {
-        setMousePosition({ x: e.touches[0].clientX, y: e.touches[0].clientY });
-      }
-    };
-
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('touchmove', handleTouchMove);
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('touchmove', handleTouchMove);
-    };
   }, []);
 
   const handleBlowCandle = () => {
@@ -114,38 +104,22 @@ const AgeCalculator = () => {
 
   return (
     <>
-      <Helmet><title>Age Calculator | ManyTool</title></Helmet>
+      <Helmet>
+        <title>{isZodiac ? 'Free Zodiac Sign Calculator Online | Find Sun Sign & Astrological Symbol | ManyTool' : 'Free Age Calculator Online | Exact Chronological Age & Zodiac | ManyTool'}</title>
+        <meta name="description" content={isZodiac ? 'Discover your astrological zodiac sign, sun symbol, birthday countdown, and exact age instantly. 100% private and accurate online zodiac calculator.' : "Calculate your exact age in years, months, days, minutes, and seconds. Discover your zodiac sign, total heartbeats, and upcoming milestones with ManyTool's free Age Calculator."} />
+      </Helmet>
 
-      {/* Cinematic Cyber-Dark Background Orbs */}
+      {/* Ambient Cosmic Background */}
       <div className="pointer-events-none fixed inset-0 overflow-hidden z-0">
-        <motion.div 
-          className="absolute w-[500px] h-[500px] rounded-full bg-amber-600/20 blur-[130px]"
-          animate={{ x: mousePosition.x * 0.07, y: mousePosition.y * 0.07 }}
-          transition={{ type: "spring", stiffness: 40, damping: 20 }}
-          style={{ top: '10%', left: '15%' }}
-        />
-        <motion.div 
-          className="absolute w-[500px] h-[500px] rounded-full bg-purple-600/20 blur-[130px]"
-          animate={{ x: -mousePosition.x * 0.06, y: -mousePosition.y * 0.06 }}
-          transition={{ type: "spring", stiffness: 40, damping: 20 }}
-          style={{ bottom: '10%', right: '10%' }}
-        />
-      </div>
-
-      {/* Lightweight Glowing Fire & Sparkle Cursor Trail Effect */}
-      <div className="pointer-events-none fixed inset-0 z-50 overflow-hidden">
-        {fireTrails.map((trail, index) => (
-          <motion.div
-            key={trail.id}
-            initial={{ opacity: 0.9, scale: 1.2, y: 0 }}
-            animate={{ opacity: 0, scale: 0.3, y: -30 }}
-            transition={{ duration: 0.45, ease: "easeOut" }}
-            className="absolute text-2xl drop-shadow-[0_0_8px_rgba(251,191,36,0.8)] filter brightness-125"
-            style={{ left: trail.x - 12, top: trail.y - 12 }}
-          >
-            {index % 2 === 0 ? '🔥' : '✨'}
-          </motion.div>
-        ))}
+        <div className="absolute top-[8%] left-[10%] w-[550px] h-[550px] rounded-full bg-amber-500/[0.07] blur-[160px] animate-pulse" style={{ animationDuration: '9s' }} />
+        <div className="absolute bottom-[10%] right-[10%] w-[550px] h-[550px] rounded-full bg-purple-600/[0.08] blur-[160px] animate-pulse" style={{ animationDuration: '11s' }} />
+        <div className="absolute top-[45%] left-[50%] -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full bg-rose-500/[0.04] blur-[140px]" />
+        
+        {/* Subtle grid pattern */}
+        <div className="absolute inset-0 opacity-[0.025] bg-[linear-gradient(to_right,#f59e0b_1px,transparent_1px),linear-gradient(to_bottom,#f59e0b_1px,transparent_1px)] bg-[size:4rem_4rem]" />
+        
+        {/* Radial vignette */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(7,9,19,0.5)_70%)]" />
       </div>
 
       {/* Scoped Celebration Overlay */}
@@ -230,21 +204,24 @@ const AgeCalculator = () => {
         className="relative z-10 max-w-7xl mx-auto space-y-8 pb-16 px-2 sm:px-6 pt-4"
       >
         
-        {/* Header */}
+        {/* Header with Integrated Sound Mute/Unmute Toggle */}
         <header className="flex flex-col md:flex-row md:items-end justify-between border-b-2 border-dashed border-white/15 pb-6 gap-4">
           <div className="space-y-3">
             <div className="inline-flex items-center gap-2">
               <span className="px-3 py-1 rounded-full bg-amber-500/15 border-2 border-dashed border-amber-400 text-amber-300 text-xs font-semibold tracking-wider uppercase shadow-lg shadow-amber-500/10">
-                Chronological Metrics
+                {isZodiac ? 'Astrological Tool' : 'Chronological Metrics'}
               </span>
             </div>
             <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white flex items-center gap-3">
-              <Timer className="text-amber-400 shrink-0" size={32} /> Age Calculator
+              <Timer className="text-amber-400 shrink-0" size={32} /> {isZodiac ? 'Zodiac Sign Calculator' : 'Age Calculator'}
             </h1>
           </div>
-          <p className="text-gray-400 text-sm max-w-md italic font-mono">
-            ~ calculate precise chronological age and live biological metrics ~
-          </p>
+
+          <div className="flex items-center gap-4">
+            <p className="text-gray-400 text-sm max-w-md italic font-mono hidden sm:block">
+              {isZodiac ? '~ discover your sun sign & cosmic profile ~' : '~ calculate precise chronological age ~'}
+            </p>
+          </div>
         </header>
 
         {/* Layout Row: Date Card on Left, Fully Clickable Celebration Zone on Right */}
@@ -264,7 +241,7 @@ const AgeCalculator = () => {
                 type="date" 
                 value={birthDate}
                 onChange={(e) => setBirthDate(e.target.value)} 
-                className="w-full px-5 py-4 rounded-2xl bg-slate-900 border-2 border-amber-400/50 text-white font-mono font-bold outline-none focus:ring-4 focus:ring-amber-400/20 transition-all shadow-inner text-base" 
+                className="w-full px-5 py-4 rounded-2xl bg-slate-900 border-2 border-amber-400/50 text-white font-mono font-bold outline-none focus:ring-4 focus:ring-amber-400/20 transition-all shadow-inner text-base cursor-pointer" 
               />
             </div>
           </div>
@@ -378,7 +355,7 @@ const AgeCalculator = () => {
                     <Tooltip text={stat.t}>
                       <motion.div 
                         whileHover={{ scale: 1.02, y: -2 }}
-                        className={`p-5 rounded-[22px] border-2 border-dashed ${stat.color} backdrop-blur-xl shadow-lg relative overflow-hidden flex flex-col justify-between`}
+                        className={`p-5 rounded-[22px] border-2 border-dashed ${stat.color} backdrop-blur-xl shadow-lg relative overflow-hidden flex flex-col justify-between cursor-pointer`}
                       >
                         <div className="flex items-center justify-between mb-2">
                           <span className="text-[11px] uppercase tracking-wider font-bold font-mono opacity-90">{stat.l}</span>
@@ -394,6 +371,8 @@ const AgeCalculator = () => {
             </motion.div>
           )}
         </AnimatePresence>
+
+        <ToolFAQ faqs={ageCalculatorFaqs} title="Age Calculator FAQs" />
       </motion.div>
     </>
   );

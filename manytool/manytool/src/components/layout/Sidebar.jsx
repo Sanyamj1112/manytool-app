@@ -6,12 +6,12 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, Type, Zap, History, X, PanelLeftClose } from 'lucide-react';
+import { ChevronDown, Type, Zap, History, X, PanelLeftClose, ImageDown } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import { useHistory } from '@/context/HistoryContext';
 
 const Sidebar = ({ isOpen = false, onClose }) => {
-  const [expandedCategories, setExpandedCategories] = useState({ text: true, productivity: true, history: true });
+  const [expandedCategories, setExpandedCategories] = useState({ text: true, productivity: true, media: true, history: true });
   const [isSelectionMode, setIsSelectionMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState([]);
   const { history, deleteHistoryItem, clearHistory } = useHistory();
@@ -32,6 +32,14 @@ const Sidebar = ({ isOpen = false, onClose }) => {
         { label: 'Age Calculator', path: '/tools/age-calculator' },
         { label: 'Password Gen', path: '/tools/password-generator' },
         { label: 'Unit Converter', path: '/tools/unit-converter' },
+        { label: 'EMI Calculator', path: '/tools/emi-calculator' },
+      ],
+    },
+    media: {
+      label: 'Media Tools', icon: ImageDown, color: 'from-rose-500 to-orange-500',
+      items: [
+        { label: 'Image Compressor', path: '/tools/image-compressor' },
+        { label: 'QR Code Generator', path: '/tools/qr-code' },
       ],
     },
   };
@@ -61,7 +69,7 @@ const Sidebar = ({ isOpen = false, onClose }) => {
         fixed md:sticky top-20 z-50
         h-[calc(100vh-80px)] w-64 
         bg-[#0f172a] border-r border-cyan-500/20 
-        overflow-y-auto transition-transform duration-300 ease-in-out
+        overflow-y-auto sidebar-scroll transition-transform duration-300 ease-in-out
         ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
       `}>
         <div className="p-4 space-y-4">

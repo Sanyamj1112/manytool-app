@@ -1,12 +1,32 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
-import { RotateCcw, BarChart3, Zap, Clock, Sparkles, MessageSquare, Target, Languages, Flame } from 'lucide-react';
+import { RotateCcw, BarChart3, Zap, Clock, Sparkles, MessageSquare, Target } from 'lucide-react';
 import { countTextMetrics } from '@/utils/textUtils';
 import { useToast } from '@/Hooks/useToast';
 import Toast from '@/components/common/Toast';
 import { fetchGroqAI } from '@/services/aiService';
 import ExportSuite from '@/components/common/ExportSuite';
+import ToolFAQ from '@/components/common/ToolFAQ';
+
+const wordCounterFaqs = [
+  {
+    q: 'How does the Word Counter calculate text metrics in real time?',
+    a: 'As you type or paste text, ManyTool instantly processes characters, words, sentences, paragraphs, and reading time client-side in real time.',
+  },
+  {
+    q: 'Is my text private and secure?',
+    a: 'Yes, completely. All text processing and counting happens locally inside your browser. No text data is stored on or sent to any remote server.',
+  },
+  {
+    q: 'How is reading time estimated?',
+    a: 'Reading time is computed based on the standard average adult reading speed of 200 words per minute (WPM).',
+  },
+  {
+    q: 'Does Word Counter support mobile and tablet browsers?',
+    a: 'Yes, ManyTool is fully responsive and optimized for seamless operation across smartphones, tablets, and desktop workstations.',
+  },
+];
 
 const WordCounter = () => {
   const [text, setText] = useState('');
@@ -17,24 +37,10 @@ const WordCounter = () => {
     characters: 0, charactersNoSpaces: 0, words: 0, sentences: 0, paragraphs: 0, readingTime: 1
   });
 
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const containerRef = useRef(null);
   const { toasts, showToast, removeToast } = useToast();
 
   useEffect(() => { setMetrics(countTextMetrics(text)); }, [text]);
-
-  useEffect(() => {
-    const handleMouseMove = (e) => setMousePosition({ x: e.clientX, y: e.clientY });
-    const handleTouchMove = (e) => {
-      if (e.touches.length > 0) setMousePosition({ x: e.touches[0].clientX, y: e.touches[0].clientY });
-    };
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('touchmove', handleTouchMove);
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('touchmove', handleTouchMove);
-    };
-  }, []);
 
   const handleClear = () => { 
     setText(''); 
@@ -66,9 +72,6 @@ const WordCounter = () => {
       } else if (task === 'suggestion') {
         setAnalysis({ title: 'Improvement Suggestions', score: null, reason: result });
         showToast('Improvement suggestions generated!', 'success');
-      } else if (task === 'hinglish') {
-        setAnalysis({ title: 'Hinglish Translation', score: null, reason: result });
-        showToast('Hinglish conversion ready!', 'success');
       }
     } catch (err) {
       showToast('Processing Failed!', 'error');
@@ -79,28 +82,12 @@ const WordCounter = () => {
 
   return (
     <>
-      <Helmet><title>Word Counter | ManyTool</title></Helmet>
+      <Helmet>
+        <title>Free Online Word Counter & Character Count Tool | ManyTool</title>
+        <meta name="description" content="Count words, characters, sentences, paragraphs, and reading time in real-time. Free online word counter with instant analysis, export options, and writing tools at ManyTool." />
+      </Helmet>
 
-      {/* Cinematic Infinity Stones Background Orbs */}
-      <div className="pointer-events-none fixed inset-0 overflow-hidden z-0">
-        <motion.div 
-          className="absolute w-[450px] h-[450px] rounded-full bg-blue-500/30 blur-[100px]"
-          animate={{ x: mousePosition.x * 0.08, y: mousePosition.y * 0.08 }}
-          transition={{ type: "spring", stiffness: 45, damping: 25 }}
-          style={{ top: '5%', left: '10%' }}
-        />
-        <motion.div 
-          className="absolute w-[450px] h-[450px] rounded-full bg-purple-600/30 blur-[100px]"
-          animate={{ x: -mousePosition.x * 0.07, y: -mousePosition.y * 0.07 }}
-          transition={{ type: "spring", stiffness: 45, damping: 25 }}
-          style={{ bottom: '10%', right: '5%' }}
-        />
-        <motion.div 
-          className="fixed w-[350px] h-[350px] rounded-full bg-cyan-400/25 blur-[90px]"
-          animate={{ x: mousePosition.x - 175, y: mousePosition.y - 175 }}
-          transition={{ type: "tween", ease: "backOut", duration: 0.15 }}
-        />
-      </div>
+
 
       <motion.div 
         ref={containerRef} 
@@ -191,20 +178,6 @@ const WordCounter = () => {
                 </div>
               </div>
 
-              {/* Hinglish Button with Tooltip */}
-              <div className="relative group/tip">
-                <motion.button 
-                  whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.96 }}
-                  onClick={() => handleAIAction('hinglish')} 
-                  disabled={!!loading || !text} 
-                  className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-orange-600/30 to-amber-600/30 hover:from-orange-600/40 hover:to-amber-600/40 text-orange-200 border border-orange-500/50 rounded-xl font-semibold text-sm transition-all shadow-lg shadow-orange-500/20 disabled:opacity-40 cursor-pointer"
-                >
-                  <Languages size={16} className="text-orange-400" /> {loading === 'hinglish' ? 'Converting...' : 'Hinglish'}
-                </motion.button>
-                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover/tip:flex px-3 py-1 bg-slate-900 text-gray-200 text-xs rounded-md shadow-xl border border-white/10 whitespace-nowrap z-50 pointer-events-none">
-                  Convert text into Hinglish blend
-                </div>
-              </div>
 
               {/* One-Click Export Suite Integration */}
               <ExportSuite data={text || "No text provided"} filename="word-counter-export" />
@@ -282,6 +255,8 @@ const WordCounter = () => {
             </motion.div>
           )}
         </AnimatePresence>
+
+        <ToolFAQ faqs={wordCounterFaqs} title="Word Counter FAQs" />
         
         <Toast toasts={toasts} onRemove={removeToast} />
       </motion.div>

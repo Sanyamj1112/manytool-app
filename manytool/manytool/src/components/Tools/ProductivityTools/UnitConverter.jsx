@@ -13,6 +13,26 @@ import InputField from '@/components/common/InputField';
 import { useToast } from '@/Hooks/useToast';
 import Toast from '@/components/common/Toast';
 import Tooltip from '@/components/common/Tooltip';
+import ToolFAQ from '@/components/common/ToolFAQ';
+
+const unitConverterFaqs = [
+  {
+    q: 'Which measurement units are supported?',
+    a: 'ManyTool Unit Converter supports Length (meters, km, miles, feet, inches), Weight (kg, grams, pounds, ounces), Temperature (Celsius, Fahrenheit, Kelvin), and Volume (liters, milliliters, gallons).',
+  },
+  {
+    q: 'Are the conversions scientifically accurate?',
+    a: 'Yes. Conversions are calculated using exact international scientific constants and verified conversion factors.',
+  },
+  {
+    q: 'What does the Swap button do?',
+    a: 'Clicking the Swap button (⇌) instantly reverses the input and output units without requiring manual re-selection.',
+  },
+  {
+    q: 'Can I use this unit converter offline?',
+    a: 'Yes! ManyTool is a Progressive Web App (PWA). Once loaded, conversions work entirely offline without an active internet connection.',
+  },
+];
 
 const UnitConverter = () => {
   const [category, setCategory] = useState('length');
@@ -108,15 +128,22 @@ const UnitConverter = () => {
   return (
     <>
       <Helmet>
-        <title>Unit Converter - ManyTool | Convert Measurements</title>
+        <title>Free Unit Converter Online | Length, Weight, Temp | ManyTool</title>
+        <meta name="description" content="Convert between length, weight, temperature, and volume units instantly. Free online unit converter with precision results at ManyTool." />
       </Helmet>
 
-      {/* Word Counter Style Rich Ambient Lighting & Neon Glows */}
+      {/* Premium Dark SaaS Glassmorphism Background */}
       <div className="pointer-events-none fixed inset-0 overflow-hidden z-0">
-        <div className="absolute top-[10%] left-[5%] w-[650px] h-[650px] rounded-full bg-teal-500/15 blur-[160px]" />
-        <div className="absolute top-[40%] right-[5%] w-[650px] h-[650px] rounded-full bg-indigo-600/15 blur-[160px]" />
-        <div className="absolute bottom-[5%] left-[30%] w-[550px] h-[550px] rounded-full bg-emerald-500/15 blur-[150px]" />
-        <div className="absolute inset-0 opacity-[0.04] bg-[linear-gradient(to_right,#14b8a6_1px,transparent_1px),linear-gradient(to_bottom,#14b8a6_1px,transparent_1px)] bg-[size:4rem_4rem]" />
+        {/* Ambient glow orbs */}
+        <div className="absolute top-[8%] left-[8%] w-[600px] h-[600px] rounded-full bg-teal-500/[0.06] blur-[180px] animate-pulse" style={{ animationDuration: '9s' }} />
+        <div className="absolute top-[35%] right-[8%] w-[550px] h-[550px] rounded-full bg-violet-600/[0.05] blur-[170px] animate-pulse" style={{ animationDuration: '11s' }} />
+        <div className="absolute bottom-[8%] left-[25%] w-[500px] h-[500px] rounded-full bg-emerald-500/[0.05] blur-[160px]" />
+        
+        {/* Subtle dot grid */}
+        <div className="absolute inset-0 opacity-[0.02] bg-[radial-gradient(circle,#14b8a6_1px,transparent_1px)] bg-[size:3rem_3rem]" />
+        
+        {/* Radial vignette */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(7,9,19,0.4)_70%)]" />
       </div>
 
       <motion.div
@@ -306,6 +333,8 @@ const UnitConverter = () => {
             <span className="font-bold">💡 PRO TIP:</span> Select a measurement type above, enter your value, choose your units, and get instant conversion results. Use the swap button to reverse the conversion.
           </p>
         </motion.div>
+
+        <ToolFAQ faqs={unitConverterFaqs} title="Unit Converter FAQs" />
       </motion.div>
 
       <Toast toasts={toasts} onRemove={removeToast} />

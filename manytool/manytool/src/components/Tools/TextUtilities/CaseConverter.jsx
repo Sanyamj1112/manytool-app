@@ -1,13 +1,34 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
-import { RotateCcw, Copy, Check, Type, Sparkles, Wand2, Terminal } from 'lucide-react';
+import { RotateCcw, Type, Sparkles, Wand2, Terminal } from 'lucide-react';
 import { convertCase } from '@/utils/textUtils';
 import CopyButton from '@/components/common/CopyButton';
 import { useToast } from '@/Hooks/useToast';
 import Toast from '@/components/common/Toast';
 import { fetchGroqAI } from '@/services/aiService';
 import ExportSuite from '@/components/common/ExportSuite';
+import ToolFAQ from '@/components/common/ToolFAQ';
+
+const caseConverterFaqs = [
+  {
+    q: 'Which text capitalization formats are supported?',
+    a: 'UPPERCASE, lowercase, Title Case, Sentence case, and Alternating case (aLtErNaTiNg) are all instantly previewed and converted.',
+  },
+  {
+    q: 'What is the difference between Title Case and Sentence case?',
+    a: 'Title Case capitalizes the initial letter of every principal word, whereas Sentence case only capitalizes the first character of each sentence.',
+  },
+  {
+    q: 'Will emojis, numbers, or special symbols be removed during conversion?',
+    a: 'No. Special characters, punctuation, numbers, and emojis remain untouched; only alphabetical characters are transformed.',
+  },
+  {
+    q: 'How does the Fix Grammar feature work?',
+    a: 'Simply paste your English text and click "Fix Grammar" to automatically fix spelling, punctuation, and grammatical mistakes.',
+  },
+];
 
 const CASE_OPTIONS = [
   { id: 'upper', label: 'UPPERCASE' },
@@ -18,26 +39,41 @@ const CASE_OPTIONS = [
 ];
 
 const CaseConverter = () => {
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
+  const isGrammarRoute = location.pathname.includes('grammar') || searchParams.get('action') === 'grammar';
+  const isPromptRoute = location.pathname.includes('prompt') || searchParams.get('action') === 'prompt';
+  const isSummarizeRoute = location.pathname.includes('summarize') || searchParams.get('action') === 'summarize';
+
+  const pageMeta = isGrammarRoute ? {
+    title: 'Free Online Grammar Fixer & Spelling Corrector | ManyTool',
+    desc: 'Correct grammar mistakes, punctuation, and improve your English text instantly online with ManyTool free grammar checker.',
+    h1: 'Online Grammar Fixer',
+    badge: 'Grammar & Text',
+    subtitle: 'Fix spelling, punctuation, and sentence grammar mistakes instantly in your browser.',
+  } : isPromptRoute ? {
+    title: 'Prompt Enhancer & Optimizer — AI Prompt Generator | ManyTool',
+    desc: 'Enhance your AI prompts with optimal structure, clarity, and instructions for ChatGPT, Claude, and Gemini.',
+    h1: 'AI Prompt Enhancer',
+    badge: 'AI Utility',
+    subtitle: 'Turn simple ideas into rich, structured prompts for ChatGPT, Claude, and Gemini.',
+  } : isSummarizeRoute ? {
+    title: 'Free Online Text Summarizer — Summarize Articles & Notes | ManyTool',
+    desc: 'Generate concise, bulleted summaries of long paragraphs, articles, or notes instantly online with ManyTool.',
+    h1: 'Text Summarizer',
+    badge: 'Text Summarizer',
+    subtitle: 'Generate concise, clear summaries of long text passages instantly.',
+  } : {
+    title: 'Free Online Case Converter | Upper, Lower, Title & Sentence Case | ManyTool',
+    desc: 'Convert text to UPPERCASE, lowercase, Title Case, Sentence case, and alternating case instantly. Free text case converter tool with one-click copy and export at ManyTool.',
+    h1: 'Case Converter',
+    badge: 'Text Utilities',
+    subtitle: 'Transform text styles instantly with advanced case formatting and tools.',
+  };
+
   const [text, setText] = useState('');
   const [loading, setLoading] = useState(null);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  
-  const containerRef = useRef(null);
   const { toasts, showToast, removeToast } = useToast();
-
-  // Unique Cursor Tracker for Case Converter (Emerald / Teal / Amber theme)
-  useEffect(() => {
-    const handleMouseMove = (e) => setMousePosition({ x: e.clientX, y: e.clientY });
-    const handleTouchMove = (e) => {
-      if (e.touches.length > 0) setMousePosition({ x: e.touches[0].clientX, y: e.touches[0].clientY });
-    };
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('touchmove', handleTouchMove);
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('touchmove', handleTouchMove);
-    };
-  }, []);
 
   const handleClear = () => {
     setText('');
@@ -73,51 +109,32 @@ const CaseConverter = () => {
 
   return (
     <>
-      <Helmet><title>Case Converter | ManyTool</title></Helmet>
-
-      {/* Unique Cinematic Emerald / Teal / Amber Background Orbs */}
-      <div className="pointer-events-none fixed inset-0 overflow-hidden z-0">
-        <motion.div 
-          className="absolute w-[500px] h-[500px] rounded-full bg-emerald-600/25 blur-[130px]"
-          animate={{ x: mousePosition.x * 0.07, y: mousePosition.y * 0.07 }}
-          transition={{ type: "spring", stiffness: 40, damping: 20 }}
-          style={{ top: '10%', left: '15%' }}
-        />
-        <motion.div 
-          className="absolute w-[500px] h-[500px] rounded-full bg-amber-600/20 blur-[130px]"
-          animate={{ x: -mousePosition.x * 0.06, y: -mousePosition.y * 0.06 }}
-          transition={{ type: "spring", stiffness: 40, damping: 20 }}
-          style={{ bottom: '10%', right: '10%' }}
-        />
-        <motion.div 
-          className="fixed w-[380px] h-[380px] rounded-full bg-teal-400/25 blur-[100px]"
-          animate={{ x: mousePosition.x - 190, y: mousePosition.y - 190 }}
-          transition={{ type: "tween", ease: "backOut", duration: 0.15 }}
-        />
-      </div>
+      <Helmet>
+        <title>{pageMeta.title}</title>
+        <meta name="description" content={pageMeta.desc} />
+      </Helmet>
 
       <motion.div 
-        ref={containerRef} 
         initial={{ opacity: 0, y: 15 }} 
         animate={{ opacity: 1, y: 0 }} 
         transition={{ duration: 0.4, ease: "easeOut" }}
         className="relative z-10 max-w-7xl mx-auto space-y-8 pb-16 px-2 sm:px-6"
       >
         
-        {/* Header Section matching Word Counter's exact layout & typography */}
+        {/* Header Section */}
         <header className="flex flex-col md:flex-row md:items-end justify-between border-b border-white/10 pb-6 gap-4">
           <div>
             <div className="flex items-center gap-2 mb-2">
               <span className="px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-semibold tracking-wider uppercase shadow-lg shadow-emerald-500/10">
-                Text Utilities
+                {pageMeta.badge}
               </span>
             </div>
             <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-white">
-              Case Converter
+              {pageMeta.h1}
             </h1>
           </div>
           <p className="text-gray-400 text-sm max-w-md">
-            Transform text styles instantly with advanced case formatting and tools.
+            {pageMeta.subtitle}
           </p>
         </header>
 
@@ -230,6 +247,8 @@ const CaseConverter = () => {
             </motion.div>
           ))}
         </div>
+
+        <ToolFAQ faqs={caseConverterFaqs} title="Case Converter FAQs" />
 
         <Toast toasts={toasts} onRemove={removeToast} />
       </motion.div>

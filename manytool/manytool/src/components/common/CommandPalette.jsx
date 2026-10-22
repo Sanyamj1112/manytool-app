@@ -7,7 +7,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, FileText, Type, AlignLeft, Link2, Timer, ShieldCheck, Gauge, X, ArrowRight } from 'lucide-react';
+import { Search, FileText, Type, AlignLeft, Link2, Timer, ShieldCheck, Gauge, X, ArrowRight, ImageDown, QrCode, Calculator } from 'lucide-react';
 
 const CommandPalette = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -17,11 +17,25 @@ const CommandPalette = () => {
   const tools = [
     { name: 'Word Counter', path: '/tools/word-counter', icon: FileText, category: 'Text Utilities' },
     { name: 'Case Converter', path: '/tools/case-converter', icon: Type, category: 'Text Utilities' },
-    { name: 'Lorem Ipsum', path: '/tools/lorem-ipsum', icon: AlignLeft, category: 'Text Utilities' },
+    { name: 'Fix Grammar & Spell Check', path: '/tools/fix-grammar', icon: Type, category: 'Text Utilities' },
+    { name: 'AI Prompt Enhancer', path: '/tools/prompt-enhancer', icon: Type, category: 'Text Utilities' },
+    { name: 'Text Summarizer', path: '/tools/text-summarizer', icon: Type, category: 'Text Utilities' },
+    { name: 'Lorem Ipsum Generator', path: '/tools/lorem-ipsum', icon: AlignLeft, category: 'Text Utilities' },
     { name: 'Slug Generator', path: '/tools/slug-generator', icon: Link2, category: 'Text Utilities' },
     { name: 'Age Calculator', path: '/tools/age-calculator', icon: Timer, category: 'Productivity' },
+    { name: 'Zodiac Sign Calculator', path: '/tools/zodiac-sign-calculator', icon: Timer, category: 'Productivity' },
     { name: 'Password Generator', path: '/tools/password-generator', icon: ShieldCheck, category: 'Productivity' },
+    { name: 'Strong Password Generator', path: '/tools/strong-password-generator', icon: ShieldCheck, category: 'Productivity' },
     { name: 'Unit Converter', path: '/tools/unit-converter', icon: Gauge, category: 'Productivity' },
+    { name: 'EMI Calculator', path: '/tools/emi-calculator', icon: Calculator, category: 'Productivity' },
+    { name: 'Home Loan EMI Calculator', path: '/tools/home-loan-emi-calculator', icon: Calculator, category: 'Productivity' },
+    { name: 'Car Loan EMI Calculator', path: '/tools/car-loan-emi-calculator', icon: Calculator, category: 'Productivity' },
+    { name: 'Image Compressor', path: '/tools/image-compressor', icon: ImageDown, category: 'Media Tools' },
+    { name: 'Compress Image Under 50KB', path: '/tools/compress-image-50kb', icon: ImageDown, category: 'Media Tools' },
+    { name: 'Compress Image Under 100KB', path: '/tools/compress-image-100kb', icon: ImageDown, category: 'Media Tools' },
+    { name: 'QR Code Generator', path: '/tools/qr-code', icon: QrCode, category: 'Media Tools' },
+    { name: 'UPI Payment QR Code', path: '/tools/upi-qr-code', icon: QrCode, category: 'Media Tools' },
+    { name: 'Wi-Fi QR Code Generator', path: '/tools/wifi-qr-code', icon: QrCode, category: 'Media Tools' },
   ];
 
   useEffect(() => {

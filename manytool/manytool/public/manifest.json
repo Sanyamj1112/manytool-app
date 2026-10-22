@@ -1,11 +1,11 @@
 {
-  "name": "ManyTool - Web Utilities Platform",
+  "name": "ManyTool — Free Online Utility Suite",
   "short_name": "ManyTool",
-  "description": "A collection of powerful web utilities for productivity and text processing",
+  "description": "Free online tools: word counter, password generator, QR code, image compressor, EMI calculator and more.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#6366f1",
+  "background_color": "#070913",
+  "theme_color": "#06b6d4",
   "scope": "/",
   "orientation": "portrait-primary",
   "icons": [
@@ -13,7 +13,26 @@
       "src": "/favicon.ico",
       "sizes": "64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
+    },
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ],
-  "categories": ["productivity", "utilities"]
+  "categories": ["utilities", "productivity"],
+  "screenshots": [
+    {
+      "src": "/og-image.png",
+      "sizes": "1200x630",
+      "type": "image/png"
+    }
+  ]
 }

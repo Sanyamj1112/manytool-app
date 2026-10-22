@@ -7,30 +7,29 @@ import CopyButton from '@/components/common/CopyButton';
 import { useToast } from '@/Hooks/useToast';
 import Toast from '@/components/common/Toast';
 import { fetchGroqAI } from '@/services/aiService';
+import ToolFAQ from '@/components/common/ToolFAQ';
+
+const slugGeneratorFaqs = [
+  {
+    q: 'What is a URL Slug?',
+    a: 'A URL slug is the human-readable part of a web address (e.g. /tools/word-counter) that clearly identifies a page for both users and search engines.',
+  },
+  {
+    q: 'Which slug separators can I customize?',
+    a: 'You can choose between hyphens (-), underscores (_), dots (.), forward slashes (/), or define any custom delimiter.',
+  },
+  {
+    q: 'Which separator is best for SEO ranking?',
+    a: 'Google and leading search engines officially recommend hyphens (-) over underscores to separate words in web URLs.',
+  },
+];
 
 const SlugGenerator = () => {
   const [text, setText] = useState('');
   const [separator, setSeparator] = useState('-');
   const [loading, setLoading] = useState(false);
   const [loadingHierarchy, setLoadingHierarchy] = useState(false);
-
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const containerRef = useRef(null);
   const { toasts, showToast, removeToast } = useToast();
-
-  // Unique Cursor Tracker for Slug Generator (Cyan / Blue / Indigo theme)
-  useEffect(() => {
-    const handleMouseMove = (e) => setMousePosition({ x: e.clientX, y: e.clientY });
-    const handleTouchMove = (e) => {
-      if (e.touches.length > 0) setMousePosition({ x: e.touches[0].clientX, y: e.touches[0].clientY });
-    };
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('touchmove', handleTouchMove);
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('touchmove', handleTouchMove);
-    };
-  }, []);
 
   const handleClear = () => {
     setText('');
@@ -73,32 +72,11 @@ const SlugGenerator = () => {
   return (
     <>
       <Helmet>
-        <title>Slug Generator | ManyTool</title>
+        <title>Free URL Slug Generator | SEO Friendly Clean Slugs | ManyTool</title>
+        <meta name="description" content="Generate clean, SEO-optimized URL slugs instantly. Convert article titles into readable links with custom separators on ManyTool." />
       </Helmet>
 
-      {/* Unique Cinematic Cyan / Blue / Indigo Background Orbs */}
-      <div className="pointer-events-none fixed inset-0 overflow-hidden z-0">
-        <motion.div 
-          className="absolute w-[500px] h-[500px] rounded-full bg-cyan-600/25 blur-[130px]"
-          animate={{ x: mousePosition.x * 0.07, y: mousePosition.y * 0.07 }}
-          transition={{ type: "spring", stiffness: 40, damping: 20 }}
-          style={{ top: '10%', left: '15%' }}
-        />
-        <motion.div 
-          className="absolute w-[500px] h-[500px] rounded-full bg-indigo-600/20 blur-[130px]"
-          animate={{ x: -mousePosition.x * 0.06, y: -mousePosition.y * 0.06 }}
-          transition={{ type: "spring", stiffness: 40, damping: 20 }}
-          style={{ bottom: '10%', right: '10%' }}
-        />
-        <motion.div 
-          className="fixed w-[380px] h-[380px] rounded-full bg-blue-400/25 blur-[100px]"
-          animate={{ x: mousePosition.x - 190, y: mousePosition.y - 190 }}
-          transition={{ type: "tween", ease: "backOut", duration: 0.15 }}
-        />
-      </div>
-
       <motion.div 
-        ref={containerRef}
         initial={{ opacity: 0, y: 15 }} 
         animate={{ opacity: 1, y: 0 }} 
         transition={{ duration: 0.4, ease: "easeOut" }}
@@ -234,6 +212,8 @@ const SlugGenerator = () => {
           </div>
 
         </div>
+
+        <ToolFAQ faqs={slugGeneratorFaqs} title="Slug Generator FAQs" />
 
         <Toast toasts={toasts} onRemove={removeToast} />
       </motion.div>

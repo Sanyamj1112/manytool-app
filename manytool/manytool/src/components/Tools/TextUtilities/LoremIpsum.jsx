@@ -7,29 +7,29 @@ import CopyButton from '@/components/common/CopyButton';
 import { useToast } from '@/Hooks/useToast';
 import Toast from '@/components/common/Toast';
 import { fetchGroqAI } from '@/services/aiService';
+import ToolFAQ from '@/components/common/ToolFAQ';
+
+const loremIpsumFaqs = [
+  {
+    q: 'What is Lorem Ipsum and why is it used?',
+    a: 'Lorem Ipsum is industry-standard placeholder text used by designers and developers to visualize content flow, typography, and page structure before final copy is ready.',
+  },
+  {
+    q: 'How many paragraphs can I generate at once?',
+    a: 'You can generate anywhere from 1 to 50 formatted paragraphs in a single click.',
+  },
+  {
+    q: 'Is this dummy text royalty-free?',
+    a: 'Yes. Lorem Ipsum is entirely in the public domain and can be freely used across personal, educational, and commercial projects without attribution.',
+  },
+];
 
 const LoremIpsum = () => {
   const [paragraphCount, setParagraphCount] = useState(3);
   const [loremText, setLoremText] = useState(generateLoremIpsum(3));
   const [loading, setLoading] = useState(false);
   
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const containerRef = useRef(null);
   const { toasts, showToast, removeToast } = useToast();
-
-  // Unique Cursor Tracker for Lorem Ipsum (Amber / Orange / Red theme)
-  useEffect(() => {
-    const handleMouseMove = (e) => setMousePosition({ x: e.clientX, y: e.clientY });
-    const handleTouchMove = (e) => {
-      if (e.touches.length > 0) setMousePosition({ x: e.touches[0].clientX, y: e.touches[0].clientY });
-    };
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('touchmove', handleTouchMove);
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('touchmove', handleTouchMove);
-    };
-  }, []);
 
   const handleGenerate = useCallback(() => {
     const count = Math.max(1, Math.min(50, parseInt(paragraphCount) || 1));
@@ -77,32 +77,11 @@ const LoremIpsum = () => {
   return (
     <>
       <Helmet>
-        <title>Lorem Ipsum Generator - ManyTool | Placeholder Text</title>
+        <title>Free Lorem Ipsum Generator | Dummy Text for Designers | ManyTool</title>
+        <meta name="description" content="Generate customizable placeholder Lorem Ipsum text by paragraph count or design layouts. Instant and free utility on ManyTool." />
       </Helmet>
 
-      {/* Unique Cinematic Amber / Orange / Red Background Orbs */}
-      <div className="pointer-events-none fixed inset-0 overflow-hidden z-0">
-        <motion.div 
-          className="absolute w-[500px] h-[500px] rounded-full bg-orange-600/25 blur-[130px]"
-          animate={{ x: mousePosition.x * 0.07, y: mousePosition.y * 0.07 }}
-          transition={{ type: "spring", stiffness: 40, damping: 20 }}
-          style={{ top: '10%', left: '15%' }}
-        />
-        <motion.div 
-          className="absolute w-[500px] h-[500px] rounded-full bg-red-600/20 blur-[130px]"
-          animate={{ x: -mousePosition.x * 0.06, y: -mousePosition.y * 0.06 }}
-          transition={{ type: "spring", stiffness: 40, damping: 20 }}
-          style={{ bottom: '10%', right: '10%' }}
-        />
-        <motion.div 
-          className="fixed w-[380px] h-[380px] rounded-full bg-amber-400/25 blur-[100px]"
-          animate={{ x: mousePosition.x - 190, y: mousePosition.y - 190 }}
-          transition={{ type: "tween", ease: "backOut", duration: 0.15 }}
-        />
-      </div>
-
       <motion.div 
-        ref={containerRef} 
         initial={{ opacity: 0, y: 15 }} 
         animate={{ opacity: 1, y: 0 }} 
         transition={{ duration: 0.4, ease: "easeOut" }}
@@ -237,6 +216,8 @@ const LoremIpsum = () => {
           </div>
 
         </div>
+
+        <ToolFAQ faqs={loremIpsumFaqs} title="Lorem Ipsum FAQs" />
 
         <Toast toasts={toasts} onRemove={removeToast} />
       </motion.div>
