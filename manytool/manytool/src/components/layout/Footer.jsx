@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Github, Mail, Heart, ExternalLink } from 'lucide-react';
+import { Github, Mail } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const Footer = () => {
@@ -106,24 +106,14 @@ const Footer = () => {
                 </Link>
               </li>
             ))}
-            <li>
-              <a
-                href="https://manytool.in/sitemap.xml"
-                target="_blank"
-                rel="noreferrer"
-                className="text-xs sm:text-sm text-gray-500 hover:text-gray-300 transition-colors flex items-center gap-1.5"
-              >
-                Sitemap <ExternalLink size={11} />
-              </a>
-            </li>
           </ul>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-6 py-5 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-gray-600">
         <p>© {currentYear} ManyTool. All rights reserved.</p>
-        <p className="flex items-center gap-1.5">
-          Made with <Heart className="w-3 h-3 text-red-500 fill-red-500" /> in India
+        <p className="font-semibold tracking-wider text-gray-500">
+          Made in INDIA
         </p>
       </div>
     </footer>
